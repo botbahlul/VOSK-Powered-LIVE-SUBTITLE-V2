@@ -70,8 +70,6 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
             initDownloadedModel(VOSK_MODEL.ISO_CODE);
         }
 
-        //initDownloadedModel(VOSK_MODEL.ISO_CODE);
-
         if (RECOGNIZING_STATUS.RECOGNIZING) {
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
