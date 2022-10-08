@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.os.IBinder;
 import android.view.Gravity;
 import android.view.View;
@@ -91,6 +92,7 @@ public class create_overlay_mic_button extends Service{
                         MainActivity.textview_recognizing.setText(string_recognizing);
                         if (!RECOGNIZING_STATUS.RECOGNIZING) {
                             mic_button.setImageResource(R.drawable.ic_mic_black_off);
+                            MainActivity.textview_debug.setText("");
                             VOICE_TEXT.STRING = "";
                             TRANSLATION_TEXT.STRING = "";
                             if (create_overlay_translation_text.overlay_translation_text != null) {
@@ -99,11 +101,12 @@ public class create_overlay_mic_button extends Service{
                                 create_overlay_translation_text.overlay_translation_text_container.setVisibility(View.INVISIBLE);
                             }
                             MainActivity.voice_text.setText("");
-                            //MainActivity.audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, MainActivity.mStreamVolume, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+                            MainActivity.audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, MainActivity.mStreamVolume, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
                             stop_vosk_voice_recognizer();
                         } else {
-                            //MainActivity.audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+                            MainActivity.audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
                             mic_button.setImageResource(R.drawable.ic_mic_black_on);
+                            MainActivity.textview_debug.setText(R.string.say_something);
                             if (TRANSLATION_TEXT.STRING.length() == 0) {
                                 if (create_overlay_translation_text.overlay_translation_text != null) {
                                     create_overlay_translation_text.overlay_translation_text.setVisibility(View.INVISIBLE);

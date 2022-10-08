@@ -1,6 +1,5 @@
 package org.vosk.livesubtitle;
 
-
 public class VOSK_MODEL {
     public static String ISO_CODE;
     public static String URL_ADDRESS;

@@ -64,12 +64,12 @@ public class MainActivity extends BaseActivity {
     private Button button_delete_model;
     private Button button_download_model;
     private ProgressBar mProgressBar;
-    private TextView textview_modelURL;
+    private TextView textview_model_URL;
     private TextView textview_model_zip_file;
     private TextView textview_filesize;
     private TextView textview_bytesdownloaded;
     private TextView textview_downloaded_status;
-    private TextView textview_extracted_folder;
+    private TextView textview_model_used_path;
     private TextView textview_src;
     private Spinner spinner_dst_languages;
     private TextView textview_dst;
@@ -384,12 +384,12 @@ public class MainActivity extends BaseActivity {
         button_delete_model = findViewById(R.id.button_delete_model);
         button_download_model = findViewById(R.id.button_download_model);
         mProgressBar = findViewById(R.id.mProgressBar);
-        textview_modelURL = findViewById(R.id.textview_modelURL);
+        textview_model_URL = findViewById(R.id.textview_model_URL);
         textview_model_zip_file = findViewById(R.id.textview_model_zip_file);
         textview_filesize = findViewById(R.id.textview_filesize);
         textview_bytesdownloaded = findViewById(R.id.textview_bytesdownloaded);
         textview_downloaded_status = findViewById(R.id.textview_downloaded_status);
-        textview_extracted_folder = findViewById(R.id.textview_extracted_folder);
+        textview_model_used_path = findViewById(R.id.textview_model_used_path);
         textview_src = findViewById(R.id.textview_src);
         spinner_dst_languages = findViewById(R.id.spinner_dst_languages);
         setup_dst_spinner(arraylist_dst_languages);
@@ -462,18 +462,18 @@ public class MainActivity extends BaseActivity {
                 VOSK_MODEL.ZIP_FILE_COMPLETE_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + VOSK_MODEL.ZIP_FILENAME;
                 VOSK_MODEL.EXTRACTED_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + "downloaded";
                 String string_url = "Model URL = " + VOSK_MODEL.URL_ADDRESS;
-                textview_modelURL.setText(string_url);
+                textview_model_URL.setText(string_url);
                 String string_zip_path = "Save as = " + VOSK_MODEL.ZIP_FILE_COMPLETE_PATH;
                 textview_model_zip_file.setText(string_zip_path);
                 check_vosk_downloaded_model(VOSK_MODEL.ISO_CODE);
 
-                string_en_src_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + "en" + "_" + textview_src.getText();
-                string_en_dst_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + "en" + "_" + textview_dst.getText();
-                string_src_en_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + textview_src.getText() + "_" + "en" ;
-                string_dst_en_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + textview_dst.getText() + "_" + "en" ;
+                string_en_src_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + "en" + "_" + LANGUAGE.SRC;
                 file_en_src_folder = new File(string_en_src_folder);
+                string_en_dst_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + "en" + "_" + LANGUAGE.DST;
                 file_en_dst_folder = new File(string_en_dst_folder);
+                string_src_en_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + LANGUAGE.SRC + "_" + "en" ;
                 file_src_en_folder = new File(string_src_en_folder);
+                string_dst_en_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + LANGUAGE.DST + "_" + "en" ;
                 file_dst_en_folder = new File(string_dst_en_folder);
                 check_mlkit_dictionary();
             }
@@ -495,7 +495,7 @@ public class MainActivity extends BaseActivity {
                 VOSK_MODEL.ZIP_FILE_COMPLETE_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + VOSK_MODEL.ZIP_FILENAME;
                 VOSK_MODEL.EXTRACTED_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + "downloaded";
                 String string_url = "Model URL = " + VOSK_MODEL.URL_ADDRESS;
-                textview_modelURL.setText(string_url);
+                textview_model_URL.setText(string_url);
                 String string_zip_path = "Save as = " + VOSK_MODEL.ZIP_FILE_COMPLETE_PATH;
                 textview_model_zip_file.setText(string_zip_path);
                 check_vosk_downloaded_model(VOSK_MODEL.ISO_CODE);
@@ -517,10 +517,10 @@ public class MainActivity extends BaseActivity {
                 LANGUAGE.DST = map_dst_country.get(dst_country);
                 textview_dst.setText(LANGUAGE.DST);
 
-                string_en_src_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + "en" + "_" + textview_src.getText();
-                string_en_dst_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + "en" + "_" + textview_dst.getText();
-                string_src_en_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + textview_src.getText() + "_" + "en" ;
-                string_dst_en_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + textview_dst.getText() + "_" + "en" ;
+                string_en_src_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + "en" + "_" + LANGUAGE.SRC;
+                string_en_dst_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + "en" + "_" + LANGUAGE.DST;
+                string_src_en_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + LANGUAGE.SRC + "_" + "en" ;
+                string_dst_en_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + LANGUAGE.DST + "_" + "en" ;
                 file_en_src_folder = new File(string_en_src_folder);
                 file_en_dst_folder = new File(string_en_dst_folder);
                 file_src_en_folder = new File(string_src_en_folder);
@@ -819,11 +819,12 @@ public class MainActivity extends BaseActivity {
             button_delete_model.setVisibility(View.GONE);
             button_download_model.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.GONE);
-            textview_modelURL.setVisibility(View.GONE);
+            textview_model_URL.setVisibility(View.GONE);
             textview_model_zip_file.setVisibility(View.GONE);
             textview_filesize.setVisibility(View.GONE);
             textview_bytesdownloaded.setVisibility(View.GONE);
             textview_downloaded_status.setVisibility(View.GONE);
+            textview_model_used_path.setVisibility(View.GONE);
         } else {
             if (edir.exists()) {
                 VOSK_MODEL.DOWNLOADED = true;
@@ -832,13 +833,13 @@ public class MainActivity extends BaseActivity {
                 textview_downloaded_status.setText(downloaded_status);
                 button_delete_model.setVisibility(View.VISIBLE);
                 button_download_model.setVisibility(View.GONE);
-                textview_modelURL.setVisibility(View.GONE);
+                textview_model_URL.setVisibility(View.GONE);
                 textview_model_zip_file.setVisibility(View.GONE);
                 textview_filesize.setVisibility(View.GONE);
                 textview_bytesdownloaded.setVisibility(View.GONE);
                 textview_downloaded_status.setVisibility(View.GONE);
-                textview_extracted_folder.setVisibility(View.VISIBLE);
-                textview_extracted_folder.setText(VOSK_MODEL.USED_PATH);
+                textview_model_used_path.setVisibility(View.VISIBLE);
+                textview_model_used_path.setText(VOSK_MODEL.USED_PATH);
             } else {
                 VOSK_MODEL.DOWNLOADED = false;
                 VOSK_MODEL.USED_PATH = "";
@@ -846,10 +847,10 @@ public class MainActivity extends BaseActivity {
                 textview_downloaded_status.setText(downloaded_status);
                 button_delete_model.setVisibility(View.GONE);
                 button_download_model.setVisibility(View.VISIBLE);
-                textview_modelURL.setVisibility(View.VISIBLE);
+                textview_model_URL.setVisibility(View.VISIBLE);
                 textview_model_zip_file.setVisibility(View.VISIBLE);
-                textview_extracted_folder.setVisibility(View.VISIBLE);
-                textview_extracted_folder.setText(VOSK_MODEL.USED_PATH);
+                textview_model_used_path.setVisibility(View.VISIBLE);
+                textview_model_used_path.setText(VOSK_MODEL.USED_PATH);
             }
         }
     }
