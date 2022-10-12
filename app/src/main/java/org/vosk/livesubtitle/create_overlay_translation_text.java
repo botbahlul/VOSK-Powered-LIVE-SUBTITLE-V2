@@ -60,7 +60,6 @@ public class create_overlay_translation_text extends Service {
         overlay_translation_text.setTextColor(Color.YELLOW);
         overlay_translation_text.setVisibility(View.INVISIBLE);
         if (RECOGNIZING_STATUS.RECOGNIZING) {
-            MainActivity.audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             if (TRANSLATION_TEXT.STRING.length() == 0) {
                 overlay_translation_text.setVisibility(View.INVISIBLE);
                 overlay_translation_text_container.setVisibility(View.INVISIBLE);
@@ -69,7 +68,6 @@ public class create_overlay_translation_text extends Service {
                 overlay_translation_text_container.setVisibility(View.VISIBLE);
             }
         } else {
-            //MainActivity.audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, MainActivity.mStreamVolume, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             overlay_translation_text.setVisibility(View.INVISIBLE);
             overlay_translation_text_container.setVisibility(View.INVISIBLE);
         }
