@@ -100,57 +100,6 @@ public class MainActivity extends BaseActivity {
     //         <activity
     //            android:name=".MainActivity"
     //            android:configChanges="keyboardHidden|screenSize|orientation|screenLayout|navigation"
-    /*@Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            display = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(display);
-            float d = display.density;
-            DISPLAY_METRIC.DISPLAY_WIDTH = display.widthPixels;
-            DISPLAY_METRIC.DISPLAY_HEIGHT = display.heightPixels;
-            DISPLAY_METRIC.DISPLAY_DENSITY = d;
-            if (OVERLAYING_STATUS.OVERLAYING) {
-                stop_create_overlay_mic_button();
-                stop_create_overlay_translation_text();
-                start_create_overlay_mic_button();
-                start_create_overlay_translation_text();
-                if (TRANSLATION_TEXT.STRING.length() > 0) {
-                    create_overlay_translation_text.overlay_translation_text.setText(TRANSLATION_TEXT.STRING);
-                }
-            }
-            if (RECOGNIZING_STATUS.RECOGNIZING) {
-                stop_vosk_voice_recognizer();
-                start_vosk_voice_recognizer();
-            }
-            String string_recognizing = "Recognizing=" + RECOGNIZING_STATUS.RECOGNIZING;
-            textview_recognizing.setText(string_recognizing);
-
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            display = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(display);
-            float d = display.density;
-            DISPLAY_METRIC.DISPLAY_WIDTH = display.widthPixels;
-            DISPLAY_METRIC.DISPLAY_HEIGHT = display.heightPixels;
-            DISPLAY_METRIC.DISPLAY_DENSITY = d;
-            if (OVERLAYING_STATUS.OVERLAYING) {
-                stop_create_overlay_mic_button();
-                stop_create_overlay_translation_text();
-                start_create_overlay_mic_button();
-                start_create_overlay_translation_text();
-
-                if (TRANSLATION_TEXT.STRING.length() > 0) {
-                    create_overlay_translation_text.overlay_translation_text.setText(TRANSLATION_TEXT.STRING);
-                }
-            }
-            if (RECOGNIZING_STATUS.RECOGNIZING) {
-                stop_vosk_voice_recognizer();
-                start_vosk_voice_recognizer();
-            }
-            String string_recognizing = "Recognizing=" + RECOGNIZING_STATUS.RECOGNIZING;
-            textview_recognizing.setText(string_recognizing);
-        }
-    }*/
 
 
     @SuppressLint({"ClickableViewAccessibility", "QueryPermissionsNeeded", "SetTextI18n"})
@@ -378,8 +327,6 @@ public class MainActivity extends BaseActivity {
         arraylist_dst_languages.add("Urdu");
         arraylist_dst_languages.add("Vietnamese");
         arraylist_dst_languages.add("Chinese");
-        //arraylist_dst_languages.add("Chinese (Simplified)");
-        //arraylist_dst_languages.add("Chinese (Traditional)");
 
         for (int i = 0; i < arraylist_dst_languages.size(); i++) {
             map_dst_country.put(arraylist_dst_languages.get(i), arraylist_dst.get(i));
@@ -420,17 +367,6 @@ public class MainActivity extends BaseActivity {
         DISPLAY_METRIC.DISPLAY_HEIGHT = display.heightPixels;
         DISPLAY_METRIC.DISPLAY_DENSITY = d;
         textview_debug.setText(DISPLAY_METRIC.DISPLAY_WIDTH+","+DISPLAY_METRIC.DISPLAY_HEIGHT);
-
-        /*if(savedInstanceState!=null)
-        {
-            //OVERLAYING_STATUS.OVERLAYING = savedInstanceState.getBoolean("overlaying");
-            //RECOGNIZING_STATUS.RECOGNIZING = savedInstanceState.getBoolean("recognizing");
-            savedInstanceState.getBundle("ALL");
-
-        } else {
-            RECOGNIZING_STATUS.RECOGNIZING = false;
-            OVERLAYING_STATUS.OVERLAYING = false;
-        }*/
 
         RECOGNIZING_STATUS.RECOGNIZING = false;
         OVERLAYING_STATUS.OVERLAYING = false;
@@ -477,17 +413,6 @@ public class MainActivity extends BaseActivity {
                 String string_zip_path = "Save as = " + VOSK_MODEL.ZIP_FILE_COMPLETE_PATH;
                 textview_model_zip_file.setText(string_zip_path);
                 check_vosk_downloaded_model(VOSK_MODEL.ISO_CODE);
-
-                /*int h;
-                if (Objects.equals(LANGUAGE.SRC, "ja") || Objects.equals(LANGUAGE.SRC, "zh")) {
-                    h = 80;
-                    //h = 124;
-                }
-                else {
-                    h = 64;
-                    //h = 108;
-                }
-                voice_text.setHeight((int) (h * getResources().getDisplayMetrics().density));*/
 
                 string_en_src_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + "en" + "_" + LANGUAGE.SRC;
                 file_en_src_folder = new File(string_en_src_folder);
@@ -566,17 +491,6 @@ public class MainActivity extends BaseActivity {
                 String dst_country = spinner_dst_languages.getSelectedItem().toString();
                 LANGUAGE.DST = map_dst_country.get(dst_country);
                 textview_dst.setText(LANGUAGE.DST);
-
-                /*int h;
-                if (Objects.equals(LANGUAGE.SRC, "ja") || Objects.equals(LANGUAGE.SRC, "zh")) {
-                    //h = 80;
-                    h = 124;
-                }
-                else {
-                    //h = 64;
-                    h = 108;
-                }
-                voice_text.setHeight((int ) (h * getResources().getDisplayMetrics().density));*/
 
                 string_en_src_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + "en" + "_" + LANGUAGE.SRC;
                 string_en_dst_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + "en" + "_" + LANGUAGE.DST;
@@ -719,35 +633,6 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
-
-        /*button_toggle_overlay.setOnTouchListener(new View.OnTouchListener() {
-            @SuppressLint("ClickableViewAccessibility")
-            @Override
-            public boolean onTouch(View v, MotionEvent e) {
-                if (e.getAction() == MotionEvent.ACTION_DOWN) {
-                    checkDrawOverlayPermission();
-                    OVERLAYING_STATUS.OVERLAYING = !OVERLAYING_STATUS.OVERLAYING;
-                    String string_overlaying = "Overlaying=" + OVERLAYING_STATUS.OVERLAYING;
-                    textview_overlaying.setText(string_overlaying);
-                    if (OVERLAYING_STATUS.OVERLAYING) {
-                        start_create_overlay_mic_button();
-                        start_create_overlay_translation_text();
-                    } else {
-                        VOICE_TEXT.STRING = "";
-                        TRANSLATION_TEXT.STRING = "";
-                        voice_text.setText("");
-                        create_overlay_translation_text.overlay_translation_text.setText("");
-                        stop_create_overlay_translation_text();
-                        stop_create_overlay_mic_button();
-                        stop_vosk_voice_recognizer();
-                        RECOGNIZING_STATUS.RECOGNIZING = false;
-                        String string_recognizing = "Recognizing=" + RECOGNIZING_STATUS.RECOGNIZING;
-                        textview_recognizing.setText(string_recognizing);
-                    }
-                }
-                return false;
-            }
-        });*/
     }
 
     @Override
@@ -759,14 +644,6 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
-
-    /*@Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        //outState.putBoolean("overlaying", OVERLAYING_STATUS.OVERLAYING);
-        //outState.putBoolean("recognizing", RECOGNIZING_STATUS.RECOGNIZING);
-        outState.putBundle("ALL", outState);
-    }*/
 
     @Override
     public void onDestroy() {
@@ -952,8 +829,8 @@ public class MainActivity extends BaseActivity {
                     });
                 } catch (Exception e) {
                     check_vosk_downloaded_model(VOSK_MODEL.ISO_CODE);
-                    toast(e.getMessage());
-                    //textview_debug.setText(e.getMessage());
+                    //toast(e.getMessage());
+                    textview_debug.setText(e.getMessage());
                 }
             }
         });
@@ -1013,7 +890,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void toast(String message) {
-        //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
