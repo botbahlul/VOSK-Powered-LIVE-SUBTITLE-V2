@@ -4,6 +4,8 @@ plugins {
 
 android {
     compileSdk 32
+    buildToolsVersion "29.0.2"
+    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "org.vosk.livesubtitle"
