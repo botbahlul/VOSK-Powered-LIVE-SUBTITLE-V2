@@ -3,16 +3,12 @@ package org.vosk.livesubtitle;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
-//import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.IBinder;
-//import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-//import androidx.annotation.NonNull;
 
 public class create_overlay_mic_button extends Service{
 
@@ -32,21 +28,6 @@ public class create_overlay_mic_button extends Service{
         create_mic_button();
     }
 
-    /*@Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (RECOGNIZING_STATUS.RECOGNIZING) {
-                mic_button.setImageResource(R.drawable.ic_mic_black_on);
-            }
-        }
-        else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            mic_button.setForegroundGravity(Gravity.CENTER_HORIZONTAL);
-            if (RECOGNIZING_STATUS.RECOGNIZING) {
-                mic_button.setImageResource(R.drawable.ic_mic_black_on);
-            }
-        }
-    }*/
 
     @Override
     public void onDestroy() {
@@ -94,7 +75,6 @@ public class create_overlay_mic_button extends Service{
     private void create_mic_button() {
         mGlobalOverlay_mic_button = new GlobalOverlay(this);
         mic_button = new ImageView(this);
-        //MainActivity.textview_debug.setText(DISPLAY_METRIC.DISPLAY_WIDTH+","+DISPLAY_METRIC.DISPLAY_HEIGHT);
         if (!RECOGNIZING_STATUS.RECOGNIZING) {
             mic_button.setImageResource(R.drawable.ic_mic_black_off);
         } else {
@@ -104,7 +84,6 @@ public class create_overlay_mic_button extends Service{
         mGlobalOverlay_mic_button.addOverlayView(mic_button,
                 96,
                 96,
-                //(int) ((0.5 * DISPLAY_METRIC.DISPLAY_WIDTH) - (0.5 * 96)),
                 0,
                 0,
                 new View.OnClickListener() {
@@ -157,7 +136,6 @@ public class create_overlay_mic_button extends Service{
                 new GlobalOverlay.OnRemoveOverlayListener() {
                     @Override
                     public void onRemoveOverlay(View mic_button, boolean isRemovedByUser) {
-                        //toast("onRemoveOverlay");
                         stopSelf();
                     }
                 });
@@ -176,10 +154,5 @@ public class create_overlay_mic_button extends Service{
     private void stop_create_overlay_translation_text() {
         stopService(new Intent(this, create_overlay_translation_text.class));
     }
-
-    private void toast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
 
 }
