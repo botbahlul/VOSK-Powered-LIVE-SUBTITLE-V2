@@ -408,7 +408,7 @@ public class MainActivity extends AppCompatActivity {
                     VOSK_MODEL.ZIP_FILENAME = substring(VOSK_MODEL.URL_ADDRESS, VOSK_MODEL.URL_ADDRESS.lastIndexOf('/') + 1, VOSK_MODEL.URL_ADDRESS.length());
                 }
                 VOSK_MODEL.ZIP_FILE_COMPLETE_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + VOSK_MODEL.ZIP_FILENAME;
-                VOSK_MODEL.EXTRACTED_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + "downloaded";
+                VOSK_MODEL.EXTRACTED_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + "downloaded" + "/";
                 String string_url = "Model URL = " + VOSK_MODEL.URL_ADDRESS;
                 textview_model_URL.setText(string_url);
                 String string_zip_path = "Save as = " + VOSK_MODEL.ZIP_FILE_COMPLETE_PATH;
@@ -475,7 +475,7 @@ public class MainActivity extends AppCompatActivity {
                     VOSK_MODEL.ZIP_FILENAME = substring(VOSK_MODEL.URL_ADDRESS, VOSK_MODEL.URL_ADDRESS.lastIndexOf('/') + 1, VOSK_MODEL.URL_ADDRESS.length());
                 }
                 VOSK_MODEL.ZIP_FILE_COMPLETE_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + VOSK_MODEL.ZIP_FILENAME;
-                VOSK_MODEL.EXTRACTED_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + "downloaded";
+                VOSK_MODEL.EXTRACTED_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + "downloaded" +"/";
                 String string_url = "Model URL = " + VOSK_MODEL.URL_ADDRESS;
                 textview_model_URL.setText(string_url);
                 String string_zip_path = "Save as = " + VOSK_MODEL.ZIP_FILE_COMPLETE_PATH;
@@ -822,7 +822,7 @@ public class MainActivity extends AppCompatActivity {
                             oldfolder.renameTo(newfolder);
                             File ddir = new File(VOSK_MODEL.ZIP_FILE_COMPLETE_PATH);
                             deleteRecursively(ddir);
-                            VOSK_MODEL.USED_PATH = VOSK_MODEL.EXTRACTED_PATH + "/" + VOSK_MODEL.ISO_CODE;
+                            VOSK_MODEL.USED_PATH = VOSK_MODEL.EXTRACTED_PATH + VOSK_MODEL.ISO_CODE;
                             String r = "";
                             textview_debug.setText(r);
                             check_vosk_downloaded_model(VOSK_MODEL.ISO_CODE);
@@ -842,7 +842,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void check_vosk_downloaded_model(String string_model) {
-        File edir = new File(VOSK_MODEL.EXTRACTED_PATH + "/" + string_model);
+        File edir = new File(VOSK_MODEL.EXTRACTED_PATH + string_model);
         if (Objects.equals(VOSK_MODEL.ISO_CODE, "en-US")) {
             button_delete_model.setVisibility(View.GONE);
             button_download_model.setVisibility(View.GONE);
@@ -856,7 +856,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             if (edir.exists()) {
                 VOSK_MODEL.DOWNLOADED = true;
-                VOSK_MODEL.USED_PATH = VOSK_MODEL.EXTRACTED_PATH + "/" + string_model;
+                VOSK_MODEL.USED_PATH = VOSK_MODEL.EXTRACTED_PATH + string_model;
                 String downloaded_status = "Model has been downloaded";
                 textview_downloaded_status.setText(downloaded_status);
                 button_delete_model.setVisibility(View.VISIBLE);
