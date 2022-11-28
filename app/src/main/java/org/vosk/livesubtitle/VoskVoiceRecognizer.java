@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Message;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.mlkit.common.model.DownloadConditions;
@@ -23,13 +25,7 @@ import org.vosk.android.SpeechService;
 import org.vosk.android.SpeechStreamService;
 import org.vosk.android.StorageService;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Timer;
@@ -76,6 +72,12 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
         else {
             h = 109;
         }
+        new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                MainActivity.voice_text.setHeight((int) (h * getResources().getDisplayMetrics().density));
+            }
+        };
         MainActivity.voice_text.setHeight((int) (h * getResources().getDisplayMetrics().density));
 
         if (Objects.equals(VOSK_MODEL.ISO_CODE, "en-US")) {
@@ -96,7 +98,8 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
                 }
             },0,1000);
             if (VOICE_TEXT.STRING.length() > 0) {
-                MainActivity.textview_debug2.setText(mlkit_status_message);
+                //MainActivity.textview_debug2.setText(mlkit_status_message);
+                setText(MainActivity.textview_debug2,mlkit_status_message);
             }
         } else {
             if (translator != null) translator.close();
@@ -119,8 +122,9 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
             if (create_overlay_mic_button.mic_button != null) create_overlay_mic_button.mic_button.setImageResource(R.drawable.ic_mic_black_off);
             RECOGNIZING_STATUS.RECOGNIZING = false;
             stopSelf();
-            String msg = "You need to download the model first";
-            toast(msg);
+            String string_msg = "You need to download the model first";
+            //toast(string_msg);
+            setText(MainActivity.textview_debug,string_msg);
         }
     }
 
@@ -221,7 +225,8 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
     }
 
     private void setErrorState(String message) {
-        MainActivity.textview_debug.setText(message);
+        //MainActivity.textview_debug.setText(message);
+        setText(MainActivity.textview_debug, message);
         if (speechService != null) speechService.startListening(this);
     }
 
@@ -255,9 +260,8 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
 
         if (!MLKIT_DICTIONARY.READY) {
             String msg = "Downloading dictionary, please be patient";
-            toast(msg);
-            String downloaded_status_message = "Dictionary is ready";
-            MainActivity.textview_debug2.setText(downloaded_status_message);
+            setText(MainActivity.textview_debug, msg);
+
             DownloadConditions conditions = new DownloadConditions.Builder().build();
             translator.downloadModelIfNeeded(conditions)
                     .addOnSuccessListener(unused -> MLKIT_DICTIONARY.READY = true)
@@ -266,7 +270,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
 
         if (MLKIT_DICTIONARY.READY) {
             mlkit_status_message = "Dictionary is ready";
-            MainActivity.textview_debug2.setText(mlkit_status_message);
+            setText(MainActivity.textview_debug2, mlkit_status_message);
             translator.translate(String.valueOf(text)).addOnSuccessListener(s -> {
                 TRANSLATION_TEXT.STRING = s;
                 if (RECOGNIZING_STATUS.RECOGNIZING) {
@@ -288,12 +292,18 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
     }
 
     private void toast(String message) {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
+    }
+
+    public void setText(final TextView tv, final String text){
+        Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            public void handleMessage(Message msg) {
+                // Any UI task, example
+                tv.setText(text);
             }
-        });
+        };
+        handler.sendEmptyMessage(1);
     }
 
 }

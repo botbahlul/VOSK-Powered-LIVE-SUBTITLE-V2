@@ -8,7 +8,7 @@ import android.media.AudioManager;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
+//import android.widget.Toast;
 
 public class create_overlay_mic_button extends Service{
 
@@ -101,7 +101,7 @@ public class create_overlay_mic_button extends Service{
                             MainActivity.voice_text.setText("");
                             String hints = "Recognized words";
                             MainActivity.voice_text.setHint(hints);
-                            //MainActivity.audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, MainActivity.mStreamVolume, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+                            MainActivity.audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, MainActivity.mStreamVolume, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
                             MainActivity.audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, (int)Double.parseDouble(String.valueOf((long)(MainActivity.audio.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION) / 2))), 0);
                             if (create_overlay_translation_text.overlay_translation_text != null) {
                                 create_overlay_translation_text.overlay_translation_text.setText("");
