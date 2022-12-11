@@ -3,4 +3,4 @@ ANDROID APP that can RECOGNIZE ANY LIVE AUDIO/VIDEO STREAMING (powered by VOSK S
 
 This version is modified version of https://github.com/botbahlul/VOSK-Powered-LIVE-SUBTITLE
 
-Check my other SPEECH RECOGNITIION + TRANSLATE PROJECTS in https://github.com/botbahlul/botbahlul.github.io
+Check my other SPEECH RECOGNITIION + TRANSLATE PROJECTS in https://botbahlul.github.io
