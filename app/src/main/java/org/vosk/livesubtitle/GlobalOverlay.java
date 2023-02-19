@@ -90,25 +90,6 @@ public class GlobalOverlay {
         View.OnTouchListener mOnTouchListener = newSimpleOnTouchListener();
         mWindowManager.addView(mOverlayView, mOverlayLayoutParams);
         mOverlayView.setOnTouchListener(mOnTouchListener);
-        // DEBUG
-        /*MainActivity.textview_debug.setText(
-                "DisplayWidth="+
-                DisplayWidth+
-                System.getProperty("line.separator")+
-                "DisplayHeight"+
-                DisplayHeight+
-                System.getProperty("line.separator")+
-                "mOverlayLayoutParams.width="+
-                mOverlayLayoutParams.width+
-                System.getProperty("line.separator")+
-                "mOverlayLayoutParams.height="+
-                mOverlayLayoutParams.height+
-                System.getProperty("line.separator")+
-                "mOverlayLayoutParams.x="+
-                mOverlayLayoutParams.x+
-                System.getProperty("line.separator")+
-                "mOverlayLayoutParams.y="+
-                mOverlayLayoutParams.y);*/
     }
 
     /** Manually remove an overlay without destroying the service. */
@@ -160,7 +141,7 @@ public class GlobalOverlay {
                         mRemoveView.getLocationOnScreen(removeViewLocation);
                         isOverRemoveView = isPointInArea(overlayViewLocation[0], overlayViewLocation[1],
                                 removeViewLocation[0], removeViewLocation[1], mRemoveView.getWidth());
-                        IS_OVER_REMOVEVIEW.IS_OVER = isOverRemoveView;
+                        OVER_REMOVEVIEW_STATUS.IS_OVER = isOverRemoveView;
 
                         return true;
                     case MotionEvent.ACTION_UP:
@@ -198,7 +179,6 @@ public class GlobalOverlay {
                     WindowManager.LayoutParams.TYPE_PHONE,
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                     PixelFormat.TRANSLUCENT);
-            //params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.START;
         }
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             params = new WindowManager.LayoutParams(
@@ -207,10 +187,8 @@ public class GlobalOverlay {
                     WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                     PixelFormat.TRANSLUCENT);
-            //params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.START;
             params.setColorMode(ActivityInfo.COLOR_MODE_HDR);
         }
-        //MainActivity.textview_debug.setText(String.valueOf(DISPLAY_METRIC.WIDTH));
         //MainActivity.textview_debug.setText(String.valueOf(DISPLAY_METRIC.DISPLAY_WIDTH)+","+String.valueOf(DISPLAY_METRIC.DISPLAY_HEIGHT)+','+String.valueOf(DISPLAY_METRIC.DISPLAY_DENSITY));
         return params;
     }

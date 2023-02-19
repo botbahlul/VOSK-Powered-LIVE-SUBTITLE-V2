@@ -10,28 +10,36 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.provider.Settings;
-import android.view.View;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,14 +50,12 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 public class MainActivity extends AppCompatActivity {
 
-    private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
+    //private static final int RECORD_AUDIO_PERMISSIONS_CODE = 1;
+    //private static final int MODIFY_AUDIO_SETTINGS_PERMISSIONS_CODE = 2;
+    //private static final int WRITE_EXTERNAL_STORAGE_PERMISSIONS_CODE = 3;
+    //private static final int DRAW_OVERLAY_PERMISSIONS_CODE = 4;
     public static AudioManager audio;
     public static int mStreamVolume;
     private final ArrayList<String> arraylist_models = new ArrayList<>();
@@ -62,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
     private final Map<String, String> map_src_country = new HashMap<>();
     private final Map<String, String> map_dst_country = new HashMap<>();
     private final Map<String, String> map_country_models_URL = new HashMap<>();
+
+    private CheckBox checkbox_debug_mode;
     private Spinner spinner_src_languages;
     private Button button_delete_model;
     private Button button_download_model;
@@ -85,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
     public static TextView textview_debug2;
     @SuppressLint("StaticFieldLeak")
     public static EditText voice_text;
-    private DisplayMetrics display;
 
     private String string_en_src_folder;
     private String string_en_dst_folder;
@@ -210,275 +217,130 @@ public class MainActivity extends AppCompatActivity {
         }
 
         arraylist_dst.add("af");
-        arraylist_dst.add("sq");
-        arraylist_dst.add("am");
         arraylist_dst.add("ar");
-        arraylist_dst.add("hy");
-        arraylist_dst.add("as");
-        arraylist_dst.add("ay");
-        arraylist_dst.add("az");
-        arraylist_dst.add("bm");
-        arraylist_dst.add("eu");
         arraylist_dst.add("be");
-        arraylist_dst.add("bn");
-        arraylist_dst.add("bho");
-        arraylist_dst.add("bs");
         arraylist_dst.add("bg");
+        arraylist_dst.add("bn");
         arraylist_dst.add("ca");
-        arraylist_dst.add("ceb");
-        arraylist_dst.add("ny");
-        arraylist_dst.add("zh-CN");
-        arraylist_dst.add("zh-TW");
-        arraylist_dst.add("co");
-        arraylist_dst.add("cr");
         arraylist_dst.add("cs");
+        arraylist_dst.add("cy");
         arraylist_dst.add("da");
-        arraylist_dst.add("dv");
-        arraylist_dst.add("nl");
-        arraylist_dst.add("doi");
-        arraylist_dst.add("en");
-        arraylist_dst.add("eo");
-        arraylist_dst.add("et");
-        arraylist_dst.add("ee");
-        arraylist_dst.add("fil");
-        arraylist_dst.add("fi");
-        arraylist_dst.add("fr");
-        arraylist_dst.add("fy");
-        arraylist_dst.add("gl");
-        arraylist_dst.add("ka");
         arraylist_dst.add("de");
         arraylist_dst.add("el");
-        arraylist_dst.add("gn");
+        arraylist_dst.add("en");
+        arraylist_dst.add("eo");
+        arraylist_dst.add("es");
+        arraylist_dst.add("et");
+        arraylist_dst.add("fa");
+        arraylist_dst.add("fi");
+        arraylist_dst.add("fr");
+        arraylist_dst.add("ga");
+        arraylist_dst.add("gl");
         arraylist_dst.add("gu");
-        arraylist_dst.add("ht");
-        arraylist_dst.add("ha");
-        arraylist_dst.add("haw");
         arraylist_dst.add("he");
         arraylist_dst.add("hi");
-        arraylist_dst.add("hmn");
+        arraylist_dst.add("hr");
+        arraylist_dst.add("ht");
         arraylist_dst.add("hu");
-        arraylist_dst.add("is");
-        arraylist_dst.add("ig");
-        arraylist_dst.add("ilo");
         arraylist_dst.add("id");
-        arraylist_dst.add("ga");
+        arraylist_dst.add("is");
         arraylist_dst.add("it");
         arraylist_dst.add("ja");
-        arraylist_dst.add("jv");
+        arraylist_dst.add("ka");
         arraylist_dst.add("kn");
-        arraylist_dst.add("kk");
-        arraylist_dst.add("km");
-        arraylist_dst.add("rw");
-        arraylist_dst.add("kok");
         arraylist_dst.add("ko");
-        arraylist_dst.add("kri");
-        arraylist_dst.add("kmr");
-        arraylist_dst.add("ckb");
-        arraylist_dst.add("ky");
-        arraylist_dst.add("lo");
-        arraylist_dst.add("la");
-        arraylist_dst.add("lv");
-        arraylist_dst.add("ln");
         arraylist_dst.add("lt");
-        arraylist_dst.add("lg");
-        arraylist_dst.add("lb");
+        arraylist_dst.add("lv");
         arraylist_dst.add("mk");
-        arraylist_dst.add("mg");
-        arraylist_dst.add("ms");
-        arraylist_dst.add("ml");
-        arraylist_dst.add("mt");
-        arraylist_dst.add("mi");
         arraylist_dst.add("mr");
-        arraylist_dst.add("mni");
-        arraylist_dst.add("lus");
-        arraylist_dst.add("mn");
-        arraylist_dst.add("my");
-        arraylist_dst.add("ne");
+        arraylist_dst.add("ms");
+        arraylist_dst.add("mt");
+        arraylist_dst.add("nl");
         arraylist_dst.add("no");
-        arraylist_dst.add("or");
-        arraylist_dst.add("om");
-        arraylist_dst.add("ps");
-        arraylist_dst.add("fa");
         arraylist_dst.add("pl");
         arraylist_dst.add("pt");
-        arraylist_dst.add("pa");
-        arraylist_dst.add("qu");
         arraylist_dst.add("ro");
         arraylist_dst.add("ru");
-        arraylist_dst.add("sm");
-        arraylist_dst.add("sa");
-        arraylist_dst.add("gd");
-        arraylist_dst.add("nso");
-        arraylist_dst.add("sr");
-        arraylist_dst.add("st");
-        arraylist_dst.add("sn");
-        arraylist_dst.add("sd");
-        arraylist_dst.add("si");
         arraylist_dst.add("sk");
         arraylist_dst.add("sl");
-        arraylist_dst.add("so");
-        arraylist_dst.add("es");
-        arraylist_dst.add("su");
-        arraylist_dst.add("sw");
+        arraylist_dst.add("sq");
         arraylist_dst.add("sv");
-        arraylist_dst.add("tg");
+        arraylist_dst.add("sw");
         arraylist_dst.add("ta");
-        arraylist_dst.add("tt");
         arraylist_dst.add("te");
         arraylist_dst.add("th");
-        arraylist_dst.add("ti");
-        arraylist_dst.add("ts");
+        arraylist_dst.add("tl");
         arraylist_dst.add("tr");
-        arraylist_dst.add("tk");
-        arraylist_dst.add("tw");
-        arraylist_dst.add("ug");
         arraylist_dst.add("uk");
         arraylist_dst.add("ur");
-        arraylist_dst.add("uz");
         arraylist_dst.add("vi");
-        arraylist_dst.add("cy");
-        arraylist_dst.add("xh");
-        arraylist_dst.add("yi");
-        arraylist_dst.add("yo");
-        arraylist_dst.add("zu");
+        arraylist_dst.add("zh");
 
         arraylist_dst_languages.add("Afrikaans");
-        arraylist_dst_languages.add("Albanian");
-        arraylist_dst_languages.add("Amharic");
         arraylist_dst_languages.add("Arabic");
-        arraylist_dst_languages.add("Armenian");
-        arraylist_dst_languages.add("Assamese");
-        arraylist_dst_languages.add("Aymara");
-        arraylist_dst_languages.add("Azerbaijani");
-        arraylist_dst_languages.add("Bambara");
-        arraylist_dst_languages.add("Basque");
         arraylist_dst_languages.add("Belarusian");
-        arraylist_dst_languages.add("Bengali");
-        arraylist_dst_languages.add("Bhojpuri");
-        arraylist_dst_languages.add("Bosnian");
         arraylist_dst_languages.add("Bulgarian");
+        arraylist_dst_languages.add("Bengali");
         arraylist_dst_languages.add("Catalan");
-        arraylist_dst_languages.add("Cebuano");
-        arraylist_dst_languages.add("Chichewa");
-        arraylist_dst_languages.add("Chinese (Simplified)");
-        arraylist_dst_languages.add("Chinese (Traditional)");
-        arraylist_dst_languages.add("Corsican");
-        arraylist_dst_languages.add("Croatian");
         arraylist_dst_languages.add("Czech");
+        arraylist_dst_languages.add("Welsh");
         arraylist_dst_languages.add("Danish");
-        arraylist_dst_languages.add("Dhivehi");
-        arraylist_dst_languages.add("Dogri");
-        arraylist_dst_languages.add("Dutch");
-        arraylist_dst_languages.add("English");
-        arraylist_dst_languages.add("Esperanto");
-        arraylist_dst_languages.add("Estonian");
-        arraylist_dst_languages.add("Ewe");
-        arraylist_dst_languages.add("Filipino");
-        arraylist_dst_languages.add("Finnish");
-        arraylist_dst_languages.add("French");
-        arraylist_dst_languages.add("Frisian");
-        arraylist_dst_languages.add("Galician");
-        arraylist_dst_languages.add("Georgian");
         arraylist_dst_languages.add("German");
         arraylist_dst_languages.add("Greek");
-        arraylist_dst_languages.add("Guarani");
+        arraylist_dst_languages.add("English");
+        arraylist_dst_languages.add("Esperanto");
+        arraylist_dst_languages.add("Spanish");
+        arraylist_dst_languages.add("Estonian");
+        arraylist_dst_languages.add("Persian");
+        arraylist_dst_languages.add("Finnish");
+        arraylist_dst_languages.add("French");
+        arraylist_dst_languages.add("Irish");
+        arraylist_dst_languages.add("Galician");
         arraylist_dst_languages.add("Gujarati");
-        arraylist_dst_languages.add("Haitian Creole");
-        arraylist_dst_languages.add("Hausa");
-        arraylist_dst_languages.add("Hawaiian");
         arraylist_dst_languages.add("Hebrew");
         arraylist_dst_languages.add("Hindi");
-        arraylist_dst_languages.add("Hmong");
+        arraylist_dst_languages.add("Croatian");
+        arraylist_dst_languages.add("Haitian");
         arraylist_dst_languages.add("Hungarian");
-        arraylist_dst_languages.add("Icelandic");
-        arraylist_dst_languages.add("Igbo");
-        arraylist_dst_languages.add("Ilocano");
         arraylist_dst_languages.add("Indonesian");
-        arraylist_dst_languages.add("Irish");
+        arraylist_dst_languages.add("Icelandic");
         arraylist_dst_languages.add("Italian");
         arraylist_dst_languages.add("Japanese");
-        arraylist_dst_languages.add("Javanese");
+        arraylist_dst_languages.add("Georgian");
         arraylist_dst_languages.add("Kannada");
-        arraylist_dst_languages.add("Kazakh");
-        arraylist_dst_languages.add("Khmer");
-        arraylist_dst_languages.add("Kinyarwanda");
-        arraylist_dst_languages.add("Konkani");
         arraylist_dst_languages.add("Korean");
-        arraylist_dst_languages.add("Krio");
-        arraylist_dst_languages.add("Kurdish (Kurmanji)");
-        arraylist_dst_languages.add("Kurdish (Sorani)");
-        arraylist_dst_languages.add("Kyrgyz");
-        arraylist_dst_languages.add("Lao");
-        arraylist_dst_languages.add("Latin");
+        arraylist_dst_languages.add("Lithuania");
         arraylist_dst_languages.add("Latvian");
-        arraylist_dst_languages.add("Lingala");
-        arraylist_dst_languages.add("Lithuanian");
-        arraylist_dst_languages.add("Luganda");
-        arraylist_dst_languages.add("Luxembourgish");
         arraylist_dst_languages.add("Macedonian");
-        arraylist_dst_languages.add("Malagasy");
-        arraylist_dst_languages.add("Malay");
-        arraylist_dst_languages.add("Malayalam");
-        arraylist_dst_languages.add("Maltese");
-        arraylist_dst_languages.add("Maori");
         arraylist_dst_languages.add("Marathi");
-        arraylist_dst_languages.add("Meiteilon (Manipuri)");
-        arraylist_dst_languages.add("Mizo");
-        arraylist_dst_languages.add("Mongolian");
-        arraylist_dst_languages.add("Myanmar (Burmese)");
-        arraylist_dst_languages.add("Nepali");
-        arraylist_dst_languages.add("Norwegian");
-        arraylist_dst_languages.add("Oriya");
-        arraylist_dst_languages.add("Oromo");
-        arraylist_dst_languages.add("Pashto");
-        arraylist_dst_languages.add("Persian");
+        arraylist_dst_languages.add("Malay");
+        arraylist_dst_languages.add("Maltese");
+        arraylist_dst_languages.add("Dutch");
+        arraylist_dst_languages.add("Norwegia");
         arraylist_dst_languages.add("Polish");
         arraylist_dst_languages.add("Portuguese");
-        arraylist_dst_languages.add("Punjabi");
-        arraylist_dst_languages.add("Quechua");
         arraylist_dst_languages.add("Romanian");
         arraylist_dst_languages.add("Russian");
-        arraylist_dst_languages.add("Samoan");
-        arraylist_dst_languages.add("Sanskrit");
-        arraylist_dst_languages.add("Scots Gaelic");
-        arraylist_dst_languages.add("Sepedi");
-        arraylist_dst_languages.add("Serbian");
-        arraylist_dst_languages.add("Sesotho");
-        arraylist_dst_languages.add("Shona");
-        arraylist_dst_languages.add("Sindhi");
-        arraylist_dst_languages.add("Sinhalese");
         arraylist_dst_languages.add("Slovak");
         arraylist_dst_languages.add("Slovenian");
-        arraylist_dst_languages.add("Somali");
-        arraylist_dst_languages.add("Spanish");
-        arraylist_dst_languages.add("Sundanese");
-        arraylist_dst_languages.add("Swahili");
+        arraylist_dst_languages.add("Albanian");
         arraylist_dst_languages.add("Swedish");
-        arraylist_dst_languages.add("Tajik");
+        arraylist_dst_languages.add("Swahili");
         arraylist_dst_languages.add("Tamil");
-        arraylist_dst_languages.add("Tatar");
         arraylist_dst_languages.add("Telugu");
         arraylist_dst_languages.add("Thai");
-        arraylist_dst_languages.add("Tigrinya");
-        arraylist_dst_languages.add("Tsonga");
+        arraylist_dst_languages.add("Tagalog");
         arraylist_dst_languages.add("Turkish");
-        arraylist_dst_languages.add("Turkmen");
-        arraylist_dst_languages.add("Twi");
         arraylist_dst_languages.add("Ukrainian");
         arraylist_dst_languages.add("Urdu");
-        arraylist_dst_languages.add("Uyghur");
-        arraylist_dst_languages.add("Uzbek");
         arraylist_dst_languages.add("Vietnamese");
-        arraylist_dst_languages.add("Welsh");
-        arraylist_dst_languages.add("Xhosa");
-        arraylist_dst_languages.add("Yiddish");
-        arraylist_dst_languages.add("Yoruba");
-        arraylist_dst_languages.add("Zulu");
+        arraylist_dst_languages.add("Chinese");
 
         for (int i = 0; i < arraylist_dst_languages.size(); i++) {
             map_dst_country.put(arraylist_dst_languages.get(i), arraylist_dst.get(i));
         }
 
+        checkbox_debug_mode = findViewById(R.id.checkbox_debug_mode);
         spinner_src_languages = findViewById(R.id.spinner_src_languages);
         setup_src_spinner(arraylist_src_languages);
         button_delete_model = findViewById(R.id.button_delete_model);
@@ -501,26 +363,34 @@ public class MainActivity extends AppCompatActivity {
         textview_debug2 = findViewById(R.id.textview_debug2);
         voice_text = findViewById(R.id.voice_text);
 
+        RECOGNIZING_STATUS.IS_RECOGNIZING = false;
+        RECOGNIZING_STATUS.STRING = "RECOGNIZING_STATUS.IS_RECOGNIZING = " + RECOGNIZING_STATUS.IS_RECOGNIZING;
+        textview_recognizing.setText(RECOGNIZING_STATUS.STRING);
+        OVERLAYING_STATUS.IS_OVERLAYING = false;
+        OVERLAYING_STATUS.STRING = "OVERLAYING_STATUS.IS_OVERLAYING = " + OVERLAYING_STATUS.IS_OVERLAYING;
+        textview_overlaying.setText(OVERLAYING_STATUS.STRING);
+
         audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mStreamVolume = audio.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+
+        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager.isNotificationPolicyAccessGranted()) {
+            audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, (int) Double.parseDouble(String.valueOf((long) (MainActivity.audio.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION) / 2))), 0);
+        }
+        else {
+            startActivity(new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
+        }
 
         VOICE_TEXT.STRING = "";
         TRANSLATION_TEXT.STRING = "";
 
-        display = new DisplayMetrics();
+        DisplayMetrics display = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(display);
         float d = display.density;
         DISPLAY_METRIC.DISPLAY_WIDTH = display.widthPixels;
         DISPLAY_METRIC.DISPLAY_HEIGHT = display.heightPixels;
         DISPLAY_METRIC.DISPLAY_DENSITY = d;
         //textview_debug.setText(DISPLAY_METRIC.DISPLAY_WIDTH+","+DISPLAY_METRIC.DISPLAY_HEIGHT);
-
-        RECOGNIZING_STATUS.RECOGNIZING = false;
-        OVERLAYING_STATUS.OVERLAYING = false;
-        String string_recognizing = "Recognizing=" + RECOGNIZING_STATUS.RECOGNIZING;
-        textview_recognizing.setText(string_recognizing);
-        String string_overlaying = "Overlaying=" + OVERLAYING_STATUS.OVERLAYING;
-        textview_overlaying.setText(string_overlaying);
 
         VOSK_MODEL.DOWNLOADED = false;
         MLKIT_DICTIONARY.READY = false;
@@ -530,32 +400,165 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setCustomView(R.layout.actionbar_layout);
         }
 
-        checkRecordAudioPermission();
-
-        NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (!notificationManager.isNotificationPolicyAccessGranted()) {
-            Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-            startActivity(intent);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
         }
+
+        if(checkbox_debug_mode.isChecked()){
+            textview_src.setVisibility(View.VISIBLE);
+            textview_dst.setVisibility(View.VISIBLE);
+            textview_recognizing.setVisibility(View.VISIBLE);
+            textview_recognizing.setText(RECOGNIZING_STATUS.STRING);
+            textview_overlaying.setVisibility(View.VISIBLE);
+            textview_overlaying.setText(OVERLAYING_STATUS.STRING);
+            textview_debug.setVisibility(View.VISIBLE);
+            textview_debug2.setVisibility(View.VISIBLE);
+            textview_downloaded_status.setVisibility(View.VISIBLE);
+            if (LANGUAGE.SRC != null) {
+                String ls  = "LANGUAGE.SRC = " + LANGUAGE.SRC;
+                textview_src.setText(ls);
+            }
+            else {
+                textview_src.setHint("LANGUAGE.SRC");
+            }
+            if (LANGUAGE.DST != null) {
+                String ld = "LANGUAGE.DST = " + LANGUAGE.DST;
+                textview_dst.setText(ld);
+            }
+            else {
+                textview_src.setHint("LANGUAGE.SRC");
+            }
+            if (!Objects.equals(VOSK_MODEL.ISO_CODE, "en-US")) {
+                if (new File(VOSK_MODEL.EXTRACTED_PATH + VOSK_MODEL.ISO_CODE).exists()) {
+                    textview_model_used_path.setVisibility(View.VISIBLE);
+                    String downloaded_status = "VOSK model has been downloaded";
+                    textview_downloaded_status.setText(downloaded_status);
+                    textview_model_used_path.setVisibility(View.VISIBLE);
+                    String string_model_used_path = "VOSK model used path=" + VOSK_MODEL.USED_PATH;
+                    textview_model_used_path.setText(string_model_used_path);
+                    String msg = "VOSK model is ready to use";
+                    textview_debug.setText(msg);
+                }
+                else {
+                    textview_model_URL.setVisibility(View.VISIBLE);
+                    textview_model_zip_file.setVisibility(View.VISIBLE);
+                    textview_filesize.setVisibility(View.VISIBLE);
+                    textview_bytesdownloaded.setVisibility(View.VISIBLE);
+                    String msg = "VOSK model has not been downloaded yet";
+                    textview_debug.setText(msg);
+                }
+            }
+        }
+        else {
+            textview_src.setVisibility(View.GONE);
+            textview_dst.setVisibility(View.GONE);
+            textview_recognizing.setVisibility(View.GONE);
+            textview_overlaying.setVisibility(View.GONE);
+            textview_debug.setVisibility(View.GONE);
+            textview_debug2.setVisibility(View.GONE);
+            textview_model_used_path.setVisibility(View.GONE);
+            textview_downloaded_status.setVisibility(View.GONE);
+            if (!Objects.equals(VOSK_MODEL.ISO_CODE, "en-US")) {
+                if (new File(VOSK_MODEL.EXTRACTED_PATH + VOSK_MODEL.ISO_CODE).exists()) {
+                    textview_model_used_path.setVisibility(View.GONE);
+                } else {
+                    textview_model_URL.setVisibility(View.GONE);
+                    textview_model_zip_file.setVisibility(View.GONE);
+                    textview_filesize.setVisibility(View.GONE);
+                    textview_bytesdownloaded.setVisibility(View.GONE);
+                }
+            }
+        }
+
+        checkbox_debug_mode.setOnClickListener(view -> {
+            if(((CompoundButton) view).isChecked()){
+                textview_src.setVisibility(View.VISIBLE);
+                textview_dst.setVisibility(View.VISIBLE);
+                textview_recognizing.setVisibility(View.VISIBLE);
+                textview_recognizing.setText(RECOGNIZING_STATUS.STRING);
+                textview_overlaying.setVisibility(View.VISIBLE);
+                textview_overlaying.setText(OVERLAYING_STATUS.STRING);
+                textview_debug.setVisibility(View.VISIBLE);
+                textview_debug2.setVisibility(View.VISIBLE);
+                textview_downloaded_status.setVisibility(View.VISIBLE);
+                if (LANGUAGE.SRC != null) {
+                    String ls  = "LANGUAGE.SRC = " + LANGUAGE.SRC;
+                    textview_src.setText(ls);
+                }
+                else {
+                    textview_src.setHint("LANGUAGE.SRC");
+                }
+                if (LANGUAGE.DST != null) {
+                    String ld = "LANGUAGE.DST = " + LANGUAGE.DST;
+                    textview_dst.setText(ld);
+                }
+                else {
+                    textview_src.setHint("LANGUAGE.SRC");
+                }
+                if (!Objects.equals(VOSK_MODEL.ISO_CODE, "en-US")) {
+                    if (new File(VOSK_MODEL.EXTRACTED_PATH + VOSK_MODEL.ISO_CODE).exists()) {
+                        textview_model_used_path.setVisibility(View.VISIBLE);
+                        String downloaded_status = "VOSK model has been downloaded";
+                        textview_downloaded_status.setText(downloaded_status);
+                        textview_model_used_path.setVisibility(View.VISIBLE);
+                        String string_model_used_path = "VOSK model used path=" + VOSK_MODEL.USED_PATH;
+                        textview_model_used_path.setText(string_model_used_path);
+                        String msg = "VOSK model is ready to use";
+                        textview_debug.setText(msg);
+                    }
+                    else {
+                        textview_model_URL.setVisibility(View.VISIBLE);
+                        textview_model_zip_file.setVisibility(View.VISIBLE);
+                        textview_filesize.setVisibility(View.VISIBLE);
+                        textview_bytesdownloaded.setVisibility(View.VISIBLE);
+                        String msg = "VOSK model has not been downloaded yet";
+                        textview_debug.setText(msg);
+                    }
+                }
+            }
+            else {
+                textview_src.setVisibility(View.GONE);
+                textview_dst.setVisibility(View.GONE);
+                textview_recognizing.setVisibility(View.GONE);
+                textview_overlaying.setVisibility(View.GONE);
+                textview_debug.setVisibility(View.GONE);
+                textview_debug2.setVisibility(View.GONE);
+                textview_model_used_path.setVisibility(View.GONE);
+                textview_downloaded_status.setVisibility(View.GONE);
+                if (!Objects.equals(VOSK_MODEL.ISO_CODE, "en-US")) {
+                    if (new File(VOSK_MODEL.EXTRACTED_PATH + VOSK_MODEL.ISO_CODE).exists()) {
+                        textview_model_used_path.setVisibility(View.GONE);
+                    } else {
+                        textview_model_URL.setVisibility(View.GONE);
+                        textview_model_zip_file.setVisibility(View.GONE);
+                        textview_filesize.setVisibility(View.GONE);
+                        textview_bytesdownloaded.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
 
         spinner_src_languages.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String src_country = spinner_src_languages.getSelectedItem().toString();
-                LANGUAGE.SRC = map_src_country.get(src_country);
-                textview_src.setText(LANGUAGE.SRC);
+                LANGUAGE.SRC_COUNTRY = spinner_src_languages.getSelectedItem().toString();
+                LANGUAGE.SRC = map_src_country.get(LANGUAGE.SRC_COUNTRY);
+                String string_src = "LANGUAGE.SRC = " + LANGUAGE.SRC;
+                textview_src.setText(string_src);
 
-                String dst_country = spinner_dst_languages.getSelectedItem().toString();
-                LANGUAGE.DST = map_dst_country.get(dst_country);
-                //textview_dst.setText(LANGUAGE.DST);
+                LANGUAGE.DST_COUNTRY = spinner_dst_languages.getSelectedItem().toString();
+                LANGUAGE.DST = map_dst_country.get(LANGUAGE.DST_COUNTRY);
+                String string_dst = "LANGUAGE.DST = " + LANGUAGE.DST;
+                textview_dst.setText(string_dst);
 
-                VOSK_MODEL.ISO_CODE = map_model_country.get(src_country);
-                VOSK_MODEL.URL_ADDRESS = map_country_models_URL.get(src_country);
+                VOSK_MODEL.ISO_CODE = map_model_country.get(LANGUAGE.SRC_COUNTRY);
+                VOSK_MODEL.URL_ADDRESS = map_country_models_URL.get(LANGUAGE.SRC_COUNTRY);
                 if (VOSK_MODEL.URL_ADDRESS != null) {
                     VOSK_MODEL.ZIP_FILENAME = substring(VOSK_MODEL.URL_ADDRESS, VOSK_MODEL.URL_ADDRESS.lastIndexOf('/') + 1, VOSK_MODEL.URL_ADDRESS.length());
                 }
                 VOSK_MODEL.ZIP_FILE_COMPLETE_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + VOSK_MODEL.ZIP_FILENAME;
                 VOSK_MODEL.EXTRACTED_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + "downloaded" + "/";
-                String string_url = "Model URL = " + VOSK_MODEL.URL_ADDRESS;
+
+                String string_url = "VOSK model URL = " + VOSK_MODEL.URL_ADDRESS;
                 textview_model_URL.setText(string_url);
                 String string_zip_path = "Save as = " + VOSK_MODEL.ZIP_FILE_COMPLETE_PATH;
                 textview_model_zip_file.setText(string_zip_path);
@@ -583,8 +586,9 @@ public class MainActivity extends AppCompatActivity {
                 stop_vosk_voice_recognizer();
                 stop_create_overlay_translation_text();
                 stop_create_overlay_mic_button();
-                if (OVERLAYING_STATUS.OVERLAYING) {
-                    if (!RECOGNIZING_STATUS.RECOGNIZING) {
+
+                if (OVERLAYING_STATUS.IS_OVERLAYING) {
+                    if (!RECOGNIZING_STATUS.IS_RECOGNIZING) {
                         if (create_overlay_mic_button.mic_button != null) create_overlay_mic_button.mic_button.setImageResource(R.drawable.ic_mic_black_off);
                     } else {
                         start_vosk_voice_recognizer();
@@ -598,31 +602,29 @@ public class MainActivity extends AppCompatActivity {
                         if (create_overlay_translation_text.overlay_translation_text != null) create_overlay_translation_text.overlay_translation_text.setText(TRANSLATION_TEXT.STRING);
                     }
                 }
-
-                String string_recognizing = "recognizing=" + RECOGNIZING_STATUS.RECOGNIZING;
-                textview_recognizing.setText(string_recognizing);
-                String string_overlaying =  "overlaying=" + OVERLAYING_STATUS.OVERLAYING;
-                textview_overlaying.setText(string_overlaying);
-
+                textview_recognizing.setText(RECOGNIZING_STATUS.STRING);
+                textview_overlaying.setText(OVERLAYING_STATUS.STRING);
             }
 
             public void onNothingSelected(AdapterView<?> adapterView) {
-                String src_country = spinner_src_languages.getSelectedItem().toString();
-                LANGUAGE.SRC = map_src_country.get(src_country);
-                textview_src.setText(LANGUAGE.SRC);
+                LANGUAGE.SRC_COUNTRY = spinner_src_languages.getSelectedItem().toString();
+                LANGUAGE.SRC = map_src_country.get(LANGUAGE.SRC_COUNTRY);
+                String string_src = "LANGUAGE.SRC = " + LANGUAGE.SRC;
+                textview_src.setText(string_src);
 
-                String dst_country = spinner_dst_languages.getSelectedItem().toString();
-                LANGUAGE.DST = map_dst_country.get(dst_country);
-                textview_dst.setText(LANGUAGE.DST);
+                LANGUAGE.DST_COUNTRY = spinner_dst_languages.getSelectedItem().toString();
+                LANGUAGE.DST = map_dst_country.get(LANGUAGE.DST_COUNTRY);
+                String string_dst = "LANGUAGE.DST = " + LANGUAGE.DST;
+                textview_dst.setText(string_dst);
 
-                VOSK_MODEL.ISO_CODE = map_model_country.get(src_country);
-                VOSK_MODEL.URL_ADDRESS = map_country_models_URL.get(src_country);
+                VOSK_MODEL.ISO_CODE = map_model_country.get(LANGUAGE.SRC_COUNTRY);
+                VOSK_MODEL.URL_ADDRESS = map_country_models_URL.get(LANGUAGE.SRC_COUNTRY);
                 if (VOSK_MODEL.URL_ADDRESS != null) {
                     VOSK_MODEL.ZIP_FILENAME = substring(VOSK_MODEL.URL_ADDRESS, VOSK_MODEL.URL_ADDRESS.lastIndexOf('/') + 1, VOSK_MODEL.URL_ADDRESS.length());
                 }
                 VOSK_MODEL.ZIP_FILE_COMPLETE_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + VOSK_MODEL.ZIP_FILENAME;
                 VOSK_MODEL.EXTRACTED_PATH = getExternalFilesDir(null).getAbsolutePath() + "/" + "downloaded" + "/";
-                String string_url = "Model URL = " + VOSK_MODEL.URL_ADDRESS;
+                String string_url = "VOSK model URL = " + VOSK_MODEL.URL_ADDRESS;
                 textview_model_URL.setText(string_url);
                 String string_zip_path = "Save as = " + VOSK_MODEL.ZIP_FILE_COMPLETE_PATH;
                 textview_model_zip_file.setText(string_zip_path);
@@ -632,12 +634,15 @@ public class MainActivity extends AppCompatActivity {
 
         spinner_dst_languages.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String src_country = spinner_src_languages.getSelectedItem().toString();
-                LANGUAGE.SRC = map_src_country.get(src_country);
-                textview_src.setText(LANGUAGE.SRC);
-                String dst_country = spinner_dst_languages.getSelectedItem().toString();
-                LANGUAGE.DST = map_dst_country.get(dst_country);
-                textview_dst.setText(LANGUAGE.DST);
+                LANGUAGE.SRC_COUNTRY = spinner_src_languages.getSelectedItem().toString();
+                LANGUAGE.SRC = map_src_country.get(LANGUAGE.SRC_COUNTRY);
+                String string_src = "LANGUAGE.SRC = " + LANGUAGE.SRC;
+                textview_src.setText(string_src);
+
+                LANGUAGE.DST_COUNTRY = spinner_dst_languages.getSelectedItem().toString();
+                LANGUAGE.DST = map_dst_country.get(LANGUAGE.DST_COUNTRY);
+                String string_dst = "LANGUAGE.DST = " + LANGUAGE.DST;
+                textview_dst.setText(string_dst);
 
                 string_en_src_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + "en" + "_" + LANGUAGE.SRC;
                 string_en_dst_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + "en" + "_" + LANGUAGE.DST;
@@ -661,8 +666,8 @@ public class MainActivity extends AppCompatActivity {
                 stop_vosk_voice_recognizer();
                 stop_create_overlay_translation_text();
                 stop_create_overlay_mic_button();
-                if (OVERLAYING_STATUS.OVERLAYING) {
-                    if (!RECOGNIZING_STATUS.RECOGNIZING) {
+                if (OVERLAYING_STATUS.IS_OVERLAYING) {
+                    if (!RECOGNIZING_STATUS.IS_RECOGNIZING) {
                         if (create_overlay_mic_button.mic_button != null) create_overlay_mic_button.mic_button.setImageResource(R.drawable.ic_mic_black_off);
                     } else {
                         start_vosk_voice_recognizer();
@@ -676,122 +681,156 @@ public class MainActivity extends AppCompatActivity {
                         if (create_overlay_translation_text.overlay_translation_text != null) create_overlay_translation_text.overlay_translation_text.setText(TRANSLATION_TEXT.STRING);
                     }
                 }
-
-                String string_recognizing = "recognizing=" + RECOGNIZING_STATUS.RECOGNIZING;
-                textview_recognizing.setText(string_recognizing);
-                String string_overlaying =  "overlaying=" + OVERLAYING_STATUS.OVERLAYING;
-                textview_overlaying.setText(string_overlaying);
+                textview_recognizing.setText(RECOGNIZING_STATUS.STRING);
+                textview_overlaying.setText(OVERLAYING_STATUS.STRING);
             }
 
             public void onNothingSelected(AdapterView<?> adapterView) {
-                String src_country = spinner_src_languages.getSelectedItem().toString();
-                LANGUAGE.SRC = map_src_country.get(src_country);
-                textview_src.setText(LANGUAGE.SRC);
+                LANGUAGE.SRC_COUNTRY = spinner_src_languages.getSelectedItem().toString();
+                LANGUAGE.SRC = map_src_country.get(LANGUAGE.SRC_COUNTRY);
+                String string_src = "LANGUAGE.SRC = " + LANGUAGE.SRC;
+                textview_src.setText(string_src);
 
-                String dst_country = spinner_dst_languages.getSelectedItem().toString();
-                LANGUAGE.DST = map_dst_country.get(dst_country);
-                textview_dst.setText(LANGUAGE.DST);
+                LANGUAGE.DST_COUNTRY = spinner_dst_languages.getSelectedItem().toString();
+                LANGUAGE.DST = map_dst_country.get(LANGUAGE.DST_COUNTRY);
+                String string_dst = "LANGUAGE.DST = " + LANGUAGE.DST;
+                textview_dst.setText(string_dst);
             }
         });
 
-        button_delete_model.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                File ddir = new File(VOSK_MODEL.USED_PATH);
-                if (ddir.exists()) {
-                    deleteRecursively(ddir);
-                    String msg = ddir + "deleted";
-                    //toast(msg);
-                    setText(textview_debug,msg);
+        button_delete_model.setOnClickListener(v -> {
+            File ddir = new File(VOSK_MODEL.USED_PATH);
+            if (ddir.exists()) {
+                deleteRecursively(ddir);
+                String msg = ddir + "deleted";
+                //toast(msg);
+                setText(textview_debug,msg);
+            }
+            check_vosk_downloaded_model(VOSK_MODEL.ISO_CODE);
+        });
+
+        button_download_model.setOnClickListener(v -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !Environment.isExternalStorageLegacy()) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
+                    Uri uri = Uri.parse("package:" + MainActivity.this.getPackageName());
+                    startActivity(new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, uri));
                 }
-                check_vosk_downloaded_model(VOSK_MODEL.ISO_CODE);
+            } else {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                }
             }
-        });
 
-        button_download_model.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!VOSK_MODEL.DOWNLOADED) {
-                    File edir = new File(getApplicationContext().getExternalFilesDir(null), "downloaded");
-                    if (!(edir.exists())) {
-                        edir.mkdir();
-                    }
-
-                    mProgressBar.setVisibility(View.VISIBLE);
+            if (!VOSK_MODEL.DOWNLOADED) {
+                File edir = new File(getApplicationContext().getExternalFilesDir(null), "downloaded");
+                if (!(edir.exists()) && edir.mkdir()) {
+                    Log.d(edir.toString(), "created");
+                }
+                mProgressBar.setVisibility(View.VISIBLE);
+                if (checkbox_debug_mode.isChecked()) {
                     textview_filesize.setVisibility(View.VISIBLE);
                     textview_bytesdownloaded.setVisibility(View.VISIBLE);
-
-                    new Thread(new Runnable() {
-                        public void run() {
-                            DownloadModel(VOSK_MODEL.URL_ADDRESS);
-                        }
-                    }).start();
-
-                } else {
-                    String msg = "Model has been downloaded, no need to download it again";
-                    //toast(msg);
-                    setText(textview_debug,msg);
                 }
+                new Thread(() -> DownloadModel(VOSK_MODEL.URL_ADDRESS)).start();
             }
         });
 
-        button_toggle_overlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkDrawOverlayPermission();
-                OVERLAYING_STATUS.OVERLAYING = !OVERLAYING_STATUS.OVERLAYING;
-                String string_overlaying = "overlaying=" + OVERLAYING_STATUS.OVERLAYING;
-                textview_overlaying.setText(string_overlaying);
-                if (OVERLAYING_STATUS.OVERLAYING) {
+        button_toggle_overlay.setOnClickListener(v -> {
+            OVERLAYING_STATUS.IS_OVERLAYING = !OVERLAYING_STATUS.IS_OVERLAYING;
+            OVERLAYING_STATUS.STRING = "OVERLAYING_STATUS.IS_OVERLAYING = " + OVERLAYING_STATUS.IS_OVERLAYING;
+            textview_overlaying.setText(OVERLAYING_STATUS.STRING);
+
+            if (OVERLAYING_STATUS.IS_OVERLAYING) {
+                if (Settings.canDrawOverlays(getApplicationContext())) {
                     start_create_overlay_mic_button();
                     start_create_overlay_translation_text();
-                } else {
-                    stop_vosk_voice_recognizer();
-                    stop_create_overlay_translation_text();
-                    stop_create_overlay_mic_button();
-                    RECOGNIZING_STATUS.RECOGNIZING = false;
-                    String string_recognizing = "recognizing=" + RECOGNIZING_STATUS.RECOGNIZING;
-                    textview_recognizing.setText(string_recognizing);
-                    string_overlaying = "overlaying=" + OVERLAYING_STATUS.OVERLAYING;
-                    textview_overlaying.setText(string_overlaying);
-                    MainActivity.textview_debug.setText("");
-                    VOICE_TEXT.STRING = "";
-                    TRANSLATION_TEXT.STRING = "";
-                    MainActivity.voice_text.setText("");
-                    String hints = "Recognized words";
-                    MainActivity.voice_text.setHint(hints);
-                    MainActivity.audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, (int)Double.parseDouble(String.valueOf((long)(MainActivity.audio.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION) / 2))), 0);
-                    if (create_overlay_translation_text.overlay_translation_text != null) {
-                        create_overlay_translation_text.overlay_translation_text.setText("");
-                        create_overlay_translation_text.overlay_translation_text.setVisibility(View.INVISIBLE);
-                        create_overlay_translation_text.overlay_translation_text_container.setVisibility(View.INVISIBLE);
-                    }
-                    if (create_overlay_mic_button.mic_button != null) {
-                        create_overlay_mic_button.mic_button.setVisibility(View.INVISIBLE);
-                    }
-                    MainActivity.textview_debug.setText("");
-                    VOICE_TEXT.STRING = "";
-                    TRANSLATION_TEXT.STRING = "";
-                    MainActivity.voice_text.setText("");
-                    string_recognizing = "recognizing=" + RECOGNIZING_STATUS.RECOGNIZING;
-                    textview_recognizing.setText(string_recognizing);
-                    string_overlaying = "overlaying=" + OVERLAYING_STATUS.OVERLAYING;
-                    textview_overlaying.setText(string_overlaying);
-                    hints = "Recognized words";
-                    MainActivity.voice_text.setHint(hints);
                 }
+                else {
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    ExecutorService executorService = Executors.newSingleThreadExecutor();
+                    Runnable runnable = () -> startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+                    executorService.execute(runnable);
+                    handler.postDelayed(() -> {
+                        if (Settings.canDrawOverlays(getApplicationContext())) {
+                            start_create_overlay_mic_button();
+                            start_create_overlay_translation_text();
+                            OVERLAYING_STATUS.IS_OVERLAYING = true;
+                            String os = "Overlay permission granted";
+                            textview_debug.setText(os);
+                        }
+                        else {
+                            OVERLAYING_STATUS.IS_OVERLAYING = false;
+                            String os = "Failed to get overlay permission in 15 seconds, please retry to tap TOGGLE OVERLAY button again";
+                            textview_debug.setText(os);
+                        }
+                        OVERLAYING_STATUS.STRING = "OVERLAYING_STATUS.IS_OVERLAYING = " + OVERLAYING_STATUS.IS_OVERLAYING;
+                        textview_overlaying.setText(OVERLAYING_STATUS.STRING);
+                    }, 15000);
+                }
+
+            } else {
+                stop_vosk_voice_recognizer();
+                stop_create_overlay_translation_text();
+                stop_create_overlay_mic_button();
+                RECOGNIZING_STATUS.IS_RECOGNIZING = false;
+                textview_recognizing.setText(RECOGNIZING_STATUS.STRING);
+                textview_overlaying.setText(OVERLAYING_STATUS.STRING);
+                MainActivity.textview_debug.setText("");
+                VOICE_TEXT.STRING = "";
+                TRANSLATION_TEXT.STRING = "";
+                MainActivity.voice_text.setText("");
+                String hints = "Recognized words";
+                MainActivity.voice_text.setHint(hints);
+                if (create_overlay_translation_text.overlay_translation_text != null) {
+                    create_overlay_translation_text.overlay_translation_text.setText("");
+                    create_overlay_translation_text.overlay_translation_text.setVisibility(View.INVISIBLE);
+                    create_overlay_translation_text.overlay_translation_text_container.setVisibility(View.INVISIBLE);
+                }
+                if (create_overlay_mic_button.mic_button != null) {
+                    create_overlay_mic_button.mic_button.setVisibility(View.INVISIBLE);
+                }
+                MainActivity.textview_debug.setText("");
+                VOICE_TEXT.STRING = "";
+                TRANSLATION_TEXT.STRING = "";
+                MainActivity.voice_text.setText("");
+                hints = "Recognized words";
+                MainActivity.voice_text.setHint(hints);
             }
         });
+
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_REQUEST_RECORD_AUDIO) {
-            if (!(grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                finish();
+        /*if (requestCode == RECORD_AUDIO_PERMISSIONS_CODE) {
+            String p;
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                p = "Record audio permission granted";
             }
+            else {
+                p = "Record audio permission denied";
+            }
+            textview_debug.setText(p);
         }
+        if (requestCode == WRITE_EXTERNAL_STORAGE_PERMISSIONS_CODE) {
+            String p;
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                p = "Write external storage permission granted";
+            }
+            else {
+                p = "Write external storage permission denied";
+            }
+            textview_debug.setText(p);
+        }*/
+    }
+
+    @Override
+    public void onBackPressed() {
+        stop_create_overlay_translation_text();
+        stop_create_overlay_mic_button();
+        stop_vosk_voice_recognizer();
+        finish();
     }
 
     @Override
@@ -816,17 +855,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.spinner_textview_align);
         spinner_dst_languages.setAdapter(adapter);
         spinner_dst_languages.setSelection(supported_languages.indexOf("Indonesian"));
-    }
-
-    private void checkRecordAudioPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
-    }
-
-    private void checkDrawOverlayPermission() {
-        if (!Settings.canDrawOverlays(this)) {
-            Intent myIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-            startActivity(myIntent);
-        }
     }
 
     private void start_create_overlay_mic_button() {
@@ -857,7 +885,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void check_mlkit_dictionary() {
-        //if (Objects.equals(LANGUAGE.SRC, LANGUAGE.DST)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !Environment.isExternalStorageLegacy()) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
+                Uri uri = Uri.parse("package:" + MainActivity.this.getPackageName());
+                startActivity(new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, uri));
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        }
+
         if (Objects.equals(LANGUAGE.SRC, LANGUAGE.DST)) {
             MLKIT_DICTIONARY.READY = true;
             mlkit_status_message = "";
@@ -865,37 +903,37 @@ public class MainActivity extends AppCompatActivity {
         if (Objects.equals(LANGUAGE.SRC, "en")) {
             if (file_en_dst_folder.exists() || file_dst_en_folder.exists()) {
                 MLKIT_DICTIONARY.READY = true;
-                mlkit_status_message = "Dictionary is ready";
+                mlkit_status_message = "MLKIT dictionary is ready";
             } else {
                 MLKIT_DICTIONARY.READY = false;
-                mlkit_status_message = "Dictionary is not ready";
+                mlkit_status_message = "MLKIT dictionary is not ready";
             }
         }
         if (Objects.equals(LANGUAGE.DST, "en")) {
             if (file_en_src_folder.exists() || file_src_en_folder.exists()) {
                 MLKIT_DICTIONARY.READY = true;
-                mlkit_status_message = "Dictionary is ready";
+                mlkit_status_message = "MLKIT dictionary is ready";
             } else {
                 MLKIT_DICTIONARY.READY = false;
-                mlkit_status_message = "Dictionary is not ready";
+                mlkit_status_message = "MLKIT dictionary is not ready";
             }
         }
         if (!(Objects.equals(LANGUAGE.SRC, "en")) && !(Objects.equals(LANGUAGE.DST, "en"))) {
             if ((file_en_src_folder.exists() || file_src_en_folder.exists()) && (file_en_dst_folder.exists()) || file_dst_en_folder.exists()) {
                 MLKIT_DICTIONARY.READY = true;
-                mlkit_status_message = "Dictionary is ready";
+                mlkit_status_message = "MLKIT dictionary is ready";
             }
             else if ((file_en_src_folder.exists() || file_src_en_folder.exists()) && !file_dst_en_folder.exists() && !file_en_dst_folder.exists()) {
                 MLKIT_DICTIONARY.READY = false;
-                mlkit_status_message = "Dictionary is not ready";
+                mlkit_status_message = "MLKIT dictionary is not ready";
             }
             else if ((file_en_dst_folder.exists() || file_dst_en_folder.exists()) && !file_src_en_folder.exists() && !file_en_src_folder.exists()) {
                 MLKIT_DICTIONARY.READY = false;
-                mlkit_status_message = "Dictionary is not ready";
+                mlkit_status_message = "MLKIT dictionary is not ready";
             }
             else if (!file_en_src_folder.exists() && !file_en_dst_folder.exists() && !file_src_en_folder.exists() && !file_dst_en_folder.exists()) {
                 MLKIT_DICTIONARY.READY = false;
-                mlkit_status_message = "Dictionary is not ready";
+                mlkit_status_message = "MLKIT dictionary is not ready";
             }
         }
         //textview_debug2.setText(mlkit_status_message);
@@ -911,12 +949,12 @@ public class MainActivity extends AppCompatActivity {
                 URL url = new URL(models_URL);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
-                String respond ="Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
-                setText(textview_debug, respond);
+                String respond ="Server response = HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
+                setText(textview_downloaded_status, respond);
                 if (connection.getContentLength() > 0) {
                     VOSK_MODEL.ZIP_FILESIZE = connection.getContentLength();
                     filesize = connection.getContentLength();
-                    String string_filesize = "File size=" + VOSK_MODEL.ZIP_FILESIZE + " bytes";
+                    String string_filesize = "File size = " + VOSK_MODEL.ZIP_FILESIZE + " bytes";
                     setText(textview_filesize, string_filesize);
                 }
 
@@ -959,7 +997,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        Handler handler1 = new Handler(Looper.getMainLooper());
+        Handler handler = new Handler(Looper.getMainLooper());
         ExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.execute(() -> {
             try {
@@ -971,17 +1009,17 @@ public class MainActivity extends AppCompatActivity {
                 total = 0;
                 if (connection.getContentLength() > 0) {
                     lengthOfFile = connection.getContentLength();
-                    String string_filesize = "File size=" + lengthOfFile + " bytes";
-                    String r ="Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
+                    String string_filesize = "File size = "  + lengthOfFile + " bytes";
+                    String r ="Server response = HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
                     InputStream input = connection.getInputStream();
-                    OutputStream output = new FileOutputStream(VOSK_MODEL.ZIP_FILE_COMPLETE_PATH);
+                    FileOutputStream output = new FileOutputStream(VOSK_MODEL.ZIP_FILE_COMPLETE_PATH);
 
                     while ((count = input.read(data)) != -1) {
                         total += count;
                         publishProgress((int) ((total * 100) / lengthOfFile));
                         output.write(data, 0, count);
-                        String string_bytes_received = "Bytes received=" + total + " bytes";
-                        setText(textview_debug, r);
+                        String string_bytes_received = "Bytes received = " + total + " bytes";
+                        setText(textview_downloaded_status, r);
                         setText(textview_filesize, string_filesize);
                         setText(textview_bytesdownloaded, string_bytes_received);
                     }
@@ -990,7 +1028,7 @@ public class MainActivity extends AppCompatActivity {
                     input.close();
                 }
 
-                handler1.post(() -> {
+                handler.post(() -> {
                     //UI Thread work here
                     mProgressBar.setVisibility(View.GONE);
                     textview_filesize.setVisibility(View.GONE);
@@ -1044,32 +1082,38 @@ public class MainActivity extends AppCompatActivity {
             if (edir.exists()) {
                 VOSK_MODEL.DOWNLOADED = true;
                 VOSK_MODEL.USED_PATH = VOSK_MODEL.EXTRACTED_PATH + string_model;
-                String downloaded_status = "Model has been downloaded";
-                textview_downloaded_status.setText(downloaded_status);
                 button_delete_model.setVisibility(View.VISIBLE);
                 button_download_model.setVisibility(View.GONE);
+
                 textview_model_URL.setVisibility(View.GONE);
                 textview_model_zip_file.setVisibility(View.GONE);
                 textview_filesize.setVisibility(View.GONE);
                 textview_bytesdownloaded.setVisibility(View.GONE);
-                textview_downloaded_status.setVisibility(View.GONE);
-                textview_model_used_path.setVisibility(View.VISIBLE);
-                String string_model_used_path = "Model used path=" + VOSK_MODEL.USED_PATH;
-                textview_model_used_path.setText(string_model_used_path);
-                String msg = "Model is ready to use";
-                textview_debug.setText(msg);
+                if (checkbox_debug_mode.isChecked()) {
+                    textview_downloaded_status.setVisibility(View.VISIBLE);
+                    String downloaded_status = "VOSK model has been downloaded";
+                    textview_downloaded_status.setVisibility(View.VISIBLE);
+                    textview_downloaded_status.setText(downloaded_status);
+                    textview_model_used_path.setVisibility(View.VISIBLE);
+                    String string_model_used_path = "VOSK model used path = " + VOSK_MODEL.USED_PATH;
+                    textview_model_used_path.setText(string_model_used_path);
+                    String msg = "VOSK model is ready to use";
+                    textview_debug.setText(msg);
+                }
                 //new Handler().postDelayed(() -> textview_debug.setText(""), 3000);
             } else {
                 VOSK_MODEL.DOWNLOADED = false;
                 VOSK_MODEL.USED_PATH = "";
-                String downloaded_status = "Model is not downloaded yet";
-                textview_downloaded_status.setText(downloaded_status);
                 button_delete_model.setVisibility(View.GONE);
                 button_download_model.setVisibility(View.VISIBLE);
-                textview_model_URL.setVisibility(View.VISIBLE);
-                textview_model_zip_file.setVisibility(View.VISIBLE);
-                textview_filesize.setVisibility(View.VISIBLE);
-                //new getFilesize().execute(VOSK_MODEL.URL_ADDRESS);
+                textview_downloaded_status.setVisibility(View.VISIBLE);
+                String downloaded_status = "VOSK model has not been downloaded yet";
+                textview_debug.setText(downloaded_status);
+                if (checkbox_debug_mode.isChecked()) {
+                    textview_model_URL.setVisibility(View.VISIBLE);
+                    textview_model_zip_file.setVisibility(View.VISIBLE);
+                    textview_filesize.setVisibility(View.VISIBLE);
+                }
                 VOSK_MODEL.ZIP_FILESIZE = get_vosk_model_filesize(VOSK_MODEL.URL_ADDRESS);
                 textview_model_used_path.setVisibility(View.GONE);
             }
@@ -1077,30 +1121,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void deleteRecursively(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory())
-            for (File child : Objects.requireNonNull(fileOrDirectory.listFiles()))
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : Objects.requireNonNull(fileOrDirectory.listFiles())) {
                 deleteRecursively(child);
-        fileOrDirectory.delete();
+            }
+            fileOrDirectory.delete();
+        }
     }
 
-    private void toast(String message) {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-            }
+    /*private void toast(String message) {
+        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
+    }*/
+
+    public void setText(final TextView tv, final String text){
+        new Handler(Looper.getMainLooper()).post(() -> {
+            // Any UI task, example
+            tv.setText(text);
         });
     }
 
-    public void setText(final TextView tv, final String text){
-        Handler handler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                // Any UI task, example
-                tv.setText(text);
-            }
-        };
-        handler.sendEmptyMessage(1);
-    }
+    /*public void checkPermission(String permission, int requestCode) {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] { permission }, requestCode);
+        }
+    }*/
 
 }

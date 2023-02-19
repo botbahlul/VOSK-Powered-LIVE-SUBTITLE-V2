@@ -3,13 +3,16 @@ package org.vosk.livesubtitle;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.Message;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.mlkit.common.model.DownloadConditions;
 import com.google.mlkit.nl.translate.Translation;
@@ -47,6 +50,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
     private Translator translator;
     private String results;
     private String mlkit_status_message;
+    Timer timer = new Timer();
 
     @Override
     public void onCreate() {
@@ -72,12 +76,6 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
         else {
             h = 109;
         }
-        new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                MainActivity.voice_text.setHeight((int) (h * getResources().getDisplayMetrics().density));
-            }
-        };
         MainActivity.voice_text.setHeight((int) (h * getResources().getDisplayMetrics().density));
 
         if (Objects.equals(VOSK_MODEL.ISO_CODE, "en-US")) {
@@ -86,8 +84,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
             initDownloadedModel();
         }
 
-        if (RECOGNIZING_STATUS.RECOGNIZING) {
-            Timer timer = new Timer();
+        if (RECOGNIZING_STATUS.IS_RECOGNIZING) {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -96,22 +93,22 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
                         //translate(VOICE_TEXT.STRING, LANGUAGE.SRC, LANGUAGE.DST);
                     }
                 }
-            },0,1000);
+            },0,3000);
             if (VOICE_TEXT.STRING.length() > 0) {
-                //MainActivity.textview_debug2.setText(mlkit_status_message);
-                setText(MainActivity.textview_debug2,mlkit_status_message);
+                setText(MainActivity.textview_debug2, mlkit_status_message);
             }
         } else {
             if (translator != null) translator.close();
+            timer.cancel();
+            timer.purge();
         }
     }
 
     private void initModel() {
         StorageService.unpack(this, VOSK_MODEL.ISO_CODE, "model", (model) -> {
-                    this.model = model;
-                    recognizeMicrophone();
-                },
-                (exception) -> setErrorState("Failed to unpack the model" + exception.getMessage()));
+            this.model = model;
+            recognizeMicrophone();
+        }, (exception) -> setErrorState("Failed to unpack the model" + exception.getMessage()));
     }
 
     private void initDownloadedModel() {
@@ -120,7 +117,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
             recognizeMicrophone();
         } else {
             if (create_overlay_mic_button.mic_button != null) create_overlay_mic_button.mic_button.setImageResource(R.drawable.ic_mic_black_off);
-            RECOGNIZING_STATUS.RECOGNIZING = false;
+            RECOGNIZING_STATUS.IS_RECOGNIZING = false;
             stopSelf();
             String string_msg = "You need to download the model first";
             //toast(string_msg);
@@ -155,7 +152,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
                     .replace("partial", ""))
                     .replace("\"", "");
         }
-        if (RECOGNIZING_STATUS.RECOGNIZING) {
+        if (RECOGNIZING_STATUS.IS_RECOGNIZING) {
             VOICE_TEXT.STRING = results.toLowerCase(Locale.forLanguageTag(LANGUAGE.SRC));
             MainActivity.voice_text.setText(VOICE_TEXT.STRING);
             MainActivity.voice_text.setSelection(MainActivity.voice_text.getText().length());
@@ -176,7 +173,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
                     .replace("partial", ""))
                     .replace("\"", "");
         }
-        if (RECOGNIZING_STATUS.RECOGNIZING) {
+        if (RECOGNIZING_STATUS.IS_RECOGNIZING) {
             VOICE_TEXT.STRING = results.toLowerCase(Locale.forLanguageTag(LANGUAGE.SRC));
             MainActivity.voice_text.setText(VOICE_TEXT.STRING);
             MainActivity.voice_text.setSelection(MainActivity.voice_text.getText().length());
@@ -198,7 +195,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
                     .replace("\"", "");
         }
 
-        if (RECOGNIZING_STATUS.RECOGNIZING) {
+        if (RECOGNIZING_STATUS.IS_RECOGNIZING) {
             VOICE_TEXT.STRING = results.toLowerCase(Locale.forLanguageTag(LANGUAGE.SRC));
             MainActivity.voice_text.setText(VOICE_TEXT.STRING);
             MainActivity.voice_text.setSelection(MainActivity.voice_text.getText().length());
@@ -225,7 +222,6 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
     }
 
     private void setErrorState(String message) {
-        //MainActivity.textview_debug.setText(message);
         setText(MainActivity.textview_debug, message);
         if (speechService != null) speechService.startListening(this);
     }
@@ -234,10 +230,10 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
         if (speechService != null) {
             speechService.stop();
             speechService = null;
-            String string_recognizing = "Recognizing=" + RECOGNIZING_STATUS.RECOGNIZING;
-            MainActivity.textview_recognizing.setText(string_recognizing);
-            String string_overlaying = "Overlaying=" + OVERLAYING_STATUS.OVERLAYING;
-            MainActivity.textview_overlaying.setText(string_overlaying);
+            RECOGNIZING_STATUS.STRING = "RECOGNIZING_STATUS.IS_RECOGNIZING = " + RECOGNIZING_STATUS.IS_RECOGNIZING;
+            MainActivity.textview_recognizing.setText(RECOGNIZING_STATUS.STRING);
+            OVERLAYING_STATUS.STRING = "OVERLAYING_STATUS.IS_OVERLAYING = " + OVERLAYING_STATUS.IS_OVERLAYING;
+            MainActivity.textview_overlaying.setText(OVERLAYING_STATUS.STRING);
         } else {
             try {
                 Recognizer rec = new Recognizer(model, 16000.0f);
@@ -258,52 +254,68 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
 
         translator = Translation.getClient(options);
 
-        if (!MLKIT_DICTIONARY.READY) {
-            String msg = "Downloading dictionary, please be patient";
-            setText(MainActivity.textview_debug, msg);
-
-            DownloadConditions conditions = new DownloadConditions.Builder().build();
-            translator.downloadModelIfNeeded(conditions)
-                    .addOnSuccessListener(unused -> MLKIT_DICTIONARY.READY = true)
-                    .addOnFailureListener(e -> {});
-        }
-
         if (MLKIT_DICTIONARY.READY) {
-            mlkit_status_message = "Dictionary is ready";
+            mlkit_status_message = "MLKIT dictionary is ready";
             setText(MainActivity.textview_debug2, mlkit_status_message);
             translator.translate(String.valueOf(text)).addOnSuccessListener(s -> {
                 TRANSLATION_TEXT.STRING = s;
-                if (RECOGNIZING_STATUS.RECOGNIZING) {
+                if (RECOGNIZING_STATUS.IS_RECOGNIZING) {
                     if (TRANSLATION_TEXT.STRING.length() == 0) {
                         create_overlay_translation_text.overlay_translation_text.setVisibility(View.INVISIBLE);
                         create_overlay_translation_text.overlay_translation_text_container.setVisibility(View.INVISIBLE);
                     } else {
                         create_overlay_translation_text.overlay_translation_text_container.setVisibility(View.VISIBLE);
+                        create_overlay_translation_text.overlay_translation_text_container.setBackgroundColor(Color.TRANSPARENT);
                         create_overlay_translation_text.overlay_translation_text.setVisibility(View.VISIBLE);
+                        create_overlay_translation_text.overlay_translation_text.setBackgroundColor(Color.TRANSPARENT);
+                        create_overlay_translation_text.overlay_translation_text.setTextIsSelectable(true);
                         create_overlay_translation_text.overlay_translation_text.setText(TRANSLATION_TEXT.STRING);
                         create_overlay_translation_text.overlay_translation_text.setSelection(create_overlay_translation_text.overlay_translation_text.getText().length());
+                        Spannable spannableString = new SpannableStringBuilder(TRANSLATION_TEXT.STRING);
+                        spannableString.setSpan(new ForegroundColorSpan(Color.YELLOW),
+                                0,
+                                create_overlay_translation_text.overlay_translation_text.getSelectionEnd(),
+                                0);
+                        spannableString.setSpan(new BackgroundColorSpan(Color.parseColor("#80000000")),
+                                0,
+                                create_overlay_translation_text.overlay_translation_text.getSelectionEnd(),
+                                0);
+                        create_overlay_translation_text.overlay_translation_text.setText(spannableString);
+                        create_overlay_translation_text.overlay_translation_text.setSelection(create_overlay_translation_text.overlay_translation_text.getText().length());
                     }
-                } else {
+                }
+                else {
                     create_overlay_translation_text.overlay_translation_text.setVisibility(View.INVISIBLE);
                     create_overlay_translation_text.overlay_translation_text_container.setVisibility(View.INVISIBLE);
                 }
             }).addOnFailureListener(e -> {});
         }
+        else {
+            String msg = "Downloading MLKIT dictionary, please be patient";
+            setText(MainActivity.textview_debug, msg);
+
+            DownloadConditions conditions = new DownloadConditions.Builder().build();
+            translator.downloadModelIfNeeded(conditions)
+                    .addOnSuccessListener(unused -> {
+                        MLKIT_DICTIONARY.READY = true;
+                        setText(MainActivity.textview_debug, "MLKIT dictionary download completed");
+                        mlkit_status_message = "MLKIT dictionary is ready";
+                        setText(MainActivity.textview_debug2, mlkit_status_message);
+                    })
+                    .addOnFailureListener(e -> {});
+
+        }
     }
 
-    private void toast(String message) {
+    /*private void toast(String message) {
         new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
-    }
+    }*/
 
     public void setText(final TextView tv, final String text){
-        Handler handler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                // Any UI task, example
+        new Handler(Looper.getMainLooper()).post(() -> {
                 tv.setText(text);
-            }
-        };
-        handler.sendEmptyMessage(1);
+        });
     }
+
 
 }
