@@ -710,8 +710,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         button_download_model.setOnClickListener(v -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !Environment.isExternalStorageLegacy()) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && !Environment.isExternalStorageLegacy()) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     Uri uri = Uri.parse("package:" + MainActivity.this.getPackageName());
                     startActivity(new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, uri));
                 }
@@ -865,8 +865,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void check_mlkit_dictionary() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !Environment.isExternalStorageLegacy()) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_SETTINGS) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && !Environment.isExternalStorageLegacy()) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 Uri uri = Uri.parse("package:" + MainActivity.this.getPackageName());
                 startActivity(new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, uri));
             }
