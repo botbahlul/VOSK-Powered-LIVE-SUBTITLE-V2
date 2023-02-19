@@ -803,26 +803,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        /*if (requestCode == RECORD_AUDIO_PERMISSIONS_CODE) {
-            String p;
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                p = "Record audio permission granted";
-            }
-            else {
-                p = "Record audio permission denied";
-            }
-            textview_debug.setText(p);
-        }
-        if (requestCode == WRITE_EXTERNAL_STORAGE_PERMISSIONS_CODE) {
-            String p;
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                p = "Write external storage permission granted";
-            }
-            else {
-                p = "Write external storage permission denied";
-            }
-            textview_debug.setText(p);
-        }*/
     }
 
     @Override
@@ -1121,12 +1101,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void deleteRecursively(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : Objects.requireNonNull(fileOrDirectory.listFiles())) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : Objects.requireNonNull(fileOrDirectory.listFiles()))
                 deleteRecursively(child);
-            }
-            fileOrDirectory.delete();
-        }
+        fileOrDirectory.delete();
     }
 
     /*private void toast(String message) {
