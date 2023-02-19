@@ -35,8 +35,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class VoskVoiceRecognizer extends Service implements RecognitionListener {
-    public VoskVoiceRecognizer() {
-    }
+    public VoskVoiceRecognizer() {}
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -51,6 +50,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
     private String results;
     private String mlkit_status_message;
     Timer timer = new Timer();
+    TimerTask timerTask;
 
     @Override
     public void onCreate() {
@@ -85,23 +85,22 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
         }
 
         if (RECOGNIZING_STATUS.IS_RECOGNIZING) {
-            timer.schedule(new TimerTask() {
+            timer = new Timer();
+            timerTask = new TimerTask() {
                 @Override
                 public void run() {
                     if (VOICE_TEXT.STRING != null) {
-                        get_translation(VOICE_TEXT.STRING, LANGUAGE.SRC, LANGUAGE.DST);
-                        //translate(VOICE_TEXT.STRING, LANGUAGE.SRC, LANGUAGE.DST);
-                    }
+                        get_translation(VOICE_TEXT.STRING, LANGUAGE.SRC, LANGUAGE.DST);                    }
                 }
-            },0,3000);
-            if (VOICE_TEXT.STRING.length() > 0) {
-                setText(MainActivity.textview_debug2, mlkit_status_message);
-            }
-        } else {
-            if (translator != null) translator.close();
+            };
+            timer.schedule(timerTask,0,1000);
+        }
+        else {
+            timerTask.cancel();
             timer.cancel();
             timer.purge();
         }
+
     }
 
     private void initModel() {
@@ -140,6 +139,9 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
             speechStreamService.stop();
             speechStreamService = null;
         }
+        timerTask.cancel();
+        timer.cancel();
+        timer.purge();
     }
 
     @Override
@@ -235,6 +237,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
             OVERLAYING_STATUS.STRING = "OVERLAYING_STATUS.IS_OVERLAYING = " + OVERLAYING_STATUS.IS_OVERLAYING;
             MainActivity.textview_overlaying.setText(OVERLAYING_STATUS.STRING);
         } else {
+            MainActivity.textview_debug.setText("");
             try {
                 Recognizer rec = new Recognizer(model, 16000.0f);
                 speechService = new SpeechService(rec, 16000.0f);
@@ -312,9 +315,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
     }*/
 
     public void setText(final TextView tv, final String text){
-        new Handler(Looper.getMainLooper()).post(() -> {
-                tv.setText(text);
-        });
+        new Handler(Looper.getMainLooper()).post(() -> tv.setText(text));
     }
 
 

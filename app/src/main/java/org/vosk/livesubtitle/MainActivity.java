@@ -52,12 +52,9 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    //private static final int RECORD_AUDIO_PERMISSIONS_CODE = 1;
-    //private static final int MODIFY_AUDIO_SETTINGS_PERMISSIONS_CODE = 2;
-    //private static final int WRITE_EXTERNAL_STORAGE_PERMISSIONS_CODE = 3;
-    //private static final int DRAW_OVERLAY_PERMISSIONS_CODE = 4;
     public static AudioManager audio;
     public static int mStreamVolume;
+
     private final ArrayList<String> arraylist_models = new ArrayList<>();
     private final ArrayList<String> arraylist_models_URL = new ArrayList<>();
     private final ArrayList<String> arraylist_src = new ArrayList<>();
@@ -392,6 +389,15 @@ public class MainActivity extends AppCompatActivity {
         DISPLAY_METRIC.DISPLAY_DENSITY = d;
         //textview_debug.setText(DISPLAY_METRIC.DISPLAY_WIDTH+","+DISPLAY_METRIC.DISPLAY_HEIGHT);
 
+        int h;
+        if (Objects.equals(LANGUAGE.DST, "ja") || Objects.equals(LANGUAGE.DST, "zh-CN") || Objects.equals(LANGUAGE.DST, "zh-TW")) {
+            h = 75;
+        }
+        else {
+            h = 62;
+        }
+        voice_text.setHeight((int) (h * getResources().getDisplayMetrics().density));
+
         VOSK_MODEL.DOWNLOADED = false;
         MLKIT_DICTIONARY.READY = false;
 
@@ -666,6 +672,7 @@ public class MainActivity extends AppCompatActivity {
                 stop_vosk_voice_recognizer();
                 stop_create_overlay_translation_text();
                 stop_create_overlay_mic_button();
+
                 if (OVERLAYING_STATUS.IS_OVERLAYING) {
                     if (!RECOGNIZING_STATUS.IS_RECOGNIZING) {
                         if (create_overlay_mic_button.mic_button != null) create_overlay_mic_button.mic_button.setImageResource(R.drawable.ic_mic_black_off);
@@ -916,7 +923,6 @@ public class MainActivity extends AppCompatActivity {
                 mlkit_status_message = "MLKIT dictionary is not ready";
             }
         }
-        //textview_debug2.setText(mlkit_status_message);
         setText(textview_debug2, mlkit_status_message);
         //new Handler().postDelayed(() -> textview_debug2.setText(""), 3000);
     }
@@ -1009,7 +1015,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 handler.post(() -> {
-                    //UI Thread work here
                     mProgressBar.setVisibility(View.GONE);
                     textview_filesize.setVisibility(View.GONE);
                     textview_bytesdownloaded.setVisibility(View.GONE);
@@ -1080,7 +1085,6 @@ public class MainActivity extends AppCompatActivity {
                     String msg = "VOSK model is ready to use";
                     textview_debug.setText(msg);
                 }
-                //new Handler().postDelayed(() -> textview_debug.setText(""), 3000);
             } else {
                 VOSK_MODEL.DOWNLOADED = false;
                 VOSK_MODEL.USED_PATH = "";
@@ -1107,21 +1111,18 @@ public class MainActivity extends AppCompatActivity {
         fileOrDirectory.delete();
     }
 
-    /*private void toast(String message) {
-        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
-    }*/
-
     public void setText(final TextView tv, final String text){
-        new Handler(Looper.getMainLooper()).post(() -> {
-            // Any UI task, example
-            tv.setText(text);
-        });
+        new Handler(Looper.getMainLooper()).post(() -> tv.setText(text));
     }
 
     /*public void checkPermission(String permission, int requestCode) {
         if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[] { permission }, requestCode);
         }
+    }*/
+
+    /*private void toast(String message) {
+        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
     }*/
 
 }
