@@ -13,8 +13,7 @@ import android.widget.EditText;
 import java.util.Objects;
 
 public class create_overlay_translation_text extends Service {
-    public create_overlay_translation_text() {
-    }
+    public create_overlay_translation_text() {}
 
     @SuppressLint("StaticFieldLeak")
     public static GlobalOverlay mGlobalOverlay_overlay_translation_text;

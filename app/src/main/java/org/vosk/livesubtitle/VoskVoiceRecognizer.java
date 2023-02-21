@@ -28,6 +28,7 @@ import org.vosk.android.SpeechService;
 import org.vosk.android.SpeechStreamService;
 import org.vosk.android.StorageService;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Objects;
@@ -96,11 +97,12 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
             timer.schedule(timerTask,0,1000);
         }
         else {
-            timerTask.cancel();
-            timer.cancel();
-            timer.purge();
+            if (timerTask != null) timerTask.cancel();
+            if (timer != null) {
+                timer.cancel();
+                timer.purge();
+            }
         }
-
     }
 
     private void initModel() {
@@ -111,16 +113,20 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
     }
 
     private void initDownloadedModel() {
-        if (VOSK_MODEL.DOWNLOADED) {
+        if (new File(VOSK_MODEL.EXTRACTED_PATH + VOSK_MODEL.ISO_CODE).exists()) {
             model = new Model(VOSK_MODEL.USED_PATH);
             recognizeMicrophone();
         } else {
             if (create_overlay_mic_button.mic_button != null) create_overlay_mic_button.mic_button.setImageResource(R.drawable.ic_mic_black_off);
             RECOGNIZING_STATUS.IS_RECOGNIZING = false;
+            RECOGNIZING_STATUS.STRING = "RECOGNIZING_STATUS.IS_RECOGNIZING = " + RECOGNIZING_STATUS.IS_RECOGNIZING;
+            MainActivity.textview_recognizing.setText(RECOGNIZING_STATUS.STRING);
+            String hints = "Recognized words";
+            MainActivity.voice_text.setHint(hints);
             stopSelf();
             String string_msg = "You need to download the model first";
-            //toast(string_msg);
-            setText(MainActivity.textview_debug,string_msg);
+            setText(MainActivity.textview_output_messages,string_msg);
+            //toast(msg);
         }
     }
 
@@ -139,9 +145,11 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
             speechStreamService.stop();
             speechStreamService = null;
         }
-        timerTask.cancel();
-        timer.cancel();
-        timer.purge();
+        if (timerTask != null) timerTask.cancel();
+        if (timer != null) {
+            timer.cancel();
+            timer.purge();
+        }
     }
 
     @Override
@@ -224,7 +232,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
     }
 
     private void setErrorState(String message) {
-        setText(MainActivity.textview_debug, message);
+        setText(MainActivity.textview_output_messages, message);
         if (speechService != null) speechService.startListening(this);
     }
 
@@ -237,7 +245,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
             OVERLAYING_STATUS.STRING = "OVERLAYING_STATUS.IS_OVERLAYING = " + OVERLAYING_STATUS.IS_OVERLAYING;
             MainActivity.textview_overlaying.setText(OVERLAYING_STATUS.STRING);
         } else {
-            MainActivity.textview_debug.setText("");
+            MainActivity.textview_output_messages.setText("");
             try {
                 Recognizer rec = new Recognizer(model, 16000.0f);
                 speechService = new SpeechService(rec, 16000.0f);
@@ -259,7 +267,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
 
         if (MLKIT_DICTIONARY.READY) {
             mlkit_status_message = "MLKIT dictionary is ready";
-            setText(MainActivity.textview_debug2, mlkit_status_message);
+            setText(MainActivity.textview__mlkit_status, mlkit_status_message);
             translator.translate(String.valueOf(text)).addOnSuccessListener(s -> {
                 TRANSLATION_TEXT.STRING = s;
                 if (RECOGNIZING_STATUS.IS_RECOGNIZING) {
@@ -295,15 +303,15 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
         }
         else {
             String msg = "Downloading MLKIT dictionary, please be patient";
-            setText(MainActivity.textview_debug, msg);
+            setText(MainActivity.textview_output_messages, msg);
 
             DownloadConditions conditions = new DownloadConditions.Builder().build();
             translator.downloadModelIfNeeded(conditions)
                     .addOnSuccessListener(unused -> {
                         MLKIT_DICTIONARY.READY = true;
-                        setText(MainActivity.textview_debug, "MLKIT dictionary download completed");
+                        setText(MainActivity.textview_output_messages, "MLKIT dictionary download completed");
                         mlkit_status_message = "MLKIT dictionary is ready";
-                        setText(MainActivity.textview_debug2, mlkit_status_message);
+                        setText(MainActivity.textview__mlkit_status, mlkit_status_message);
                     })
                     .addOnFailureListener(e -> {});
 

@@ -117,7 +117,7 @@
             android:visibility="invisible"
             />
         <TextView
-            android:id="@+id/textview_filesize"
+            android:id="@+id/textview_server_response"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -126,7 +126,7 @@
             android:visibility="invisible"
             />
         <TextView
-            android:id="@+id/textview_bytesdownloaded"
+            android:id="@+id/textview_file_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -135,12 +135,13 @@
             android:visibility="invisible"
             />
         <TextView
-            android:id="@+id/textview_downloaded_status"
+            android:id="@+id/textview_bytes_downloaded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textAlignment="gravity"
             android:textSize="12sp"
+            android:visibility="invisible"
             />
         <TextView
             android:id="@+id/textview_model_used_path"
@@ -240,7 +241,7 @@
             android:textSize="12sp"
             />
         <TextView
-            android:id="@+id/textview_debug"
+            android:id="@+id/textview_output_messages"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
@@ -250,7 +251,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             />
         <TextView
-            android:id="@+id/textview_debug2"
+            android:id="@+id/textview__mlkit_status"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
