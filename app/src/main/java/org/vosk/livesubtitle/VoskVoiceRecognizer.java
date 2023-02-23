@@ -50,8 +50,8 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
     private Translator translator;
     private String results;
     private String mlkit_status_message;
-    Timer timer = new Timer();
-    TimerTask timerTask;
+    private Timer timer = new Timer();
+    private TimerTask timerTask;
 
     @Override
     public void onCreate() {
