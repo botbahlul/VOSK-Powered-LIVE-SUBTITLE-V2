@@ -251,7 +251,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             />
         <TextView
-            android:id="@+id/textview__mlkit_status"
+            android:id="@+id/textview_mlkit_status"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"

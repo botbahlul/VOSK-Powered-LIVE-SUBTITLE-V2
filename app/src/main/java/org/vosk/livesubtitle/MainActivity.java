@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static TextView textview_output_messages;
     @SuppressLint("StaticFieldLeak")
-    public static TextView textview__mlkit_status;
+    public static TextView textview_mlkit_status;
     @SuppressLint("StaticFieldLeak")
     public static EditText voice_text;
 
@@ -357,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
         textview_overlaying = findViewById(R.id.textview_overlaying);
         Button button_toggle_overlay = findViewById(R.id.button_toggle_overlay);
         textview_output_messages = findViewById(R.id.textview_output_messages);
-        textview__mlkit_status = findViewById(R.id.textview__mlkit_status);
+        textview_mlkit_status = findViewById(R.id.textview_mlkit_status);
         voice_text = findViewById(R.id.voice_text);
 
         audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -418,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
                 textview_overlaying.setVisibility(View.VISIBLE);
                 setText(textview_overlaying, OVERLAYING_STATUS.STRING);
                 textview_output_messages.setVisibility(View.VISIBLE);
-                textview__mlkit_status.setVisibility(View.VISIBLE);
+                textview_mlkit_status.setVisibility(View.VISIBLE);
                 if (LANGUAGE.SRC != null) {
                     String ls  = "LANGUAGE.SRC = " + LANGUAGE.SRC;
                     setText(textview_src, ls);
@@ -454,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
                 textview_recognizing.setVisibility(View.GONE);
                 textview_overlaying.setVisibility(View.GONE);
                 textview_model_used_path.setVisibility(View.GONE);
-                textview__mlkit_status.setVisibility(View.GONE);
+                textview_mlkit_status.setVisibility(View.GONE);
                 if (!Objects.equals(VOSK_MODEL.ISO_CODE, "en-US")) {
                     if (new File(VOSK_MODEL.EXTRACTED_PATH + VOSK_MODEL.ISO_CODE).exists()) {
                         textview_model_used_path.setVisibility(View.GONE);
@@ -477,7 +477,7 @@ public class MainActivity extends AppCompatActivity {
             textview_overlaying.setVisibility(View.VISIBLE);
             setText(textview_overlaying, OVERLAYING_STATUS.STRING);
             textview_output_messages.setVisibility(View.VISIBLE);
-            textview__mlkit_status.setVisibility(View.VISIBLE);
+            textview_mlkit_status.setVisibility(View.VISIBLE);
             if (LANGUAGE.SRC != null) {
                 String ls  = "LANGUAGE.SRC = " + LANGUAGE.SRC;
                 setText(textview_src, ls);
@@ -513,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
             textview_recognizing.setVisibility(View.GONE);
             textview_overlaying.setVisibility(View.GONE);
             textview_model_used_path.setVisibility(View.GONE);
-            textview__mlkit_status.setVisibility(View.GONE);
+            textview_mlkit_status.setVisibility(View.GONE);
             if (!Objects.equals(VOSK_MODEL.ISO_CODE, "en-US")) {
                 if (new File(VOSK_MODEL.EXTRACTED_PATH + VOSK_MODEL.ISO_CODE).exists()) {
                     textview_model_used_path.setVisibility(View.GONE);
@@ -1008,8 +1008,8 @@ public class MainActivity extends AppCompatActivity {
                 mlkit_status_message = "MLKIT dictionary is not ready";
             }
         }
-        setText(textview__mlkit_status, mlkit_status_message);
-        //new Handler().postDelayed(() -> setText(textview__mlkit_status, ""), 3000);
+        setText(textview_mlkit_status, mlkit_status_message);
+        //new Handler().postDelayed(() -> setText(textview_mlkit_status, ""), 3000);
     }
 
     int fileSize;

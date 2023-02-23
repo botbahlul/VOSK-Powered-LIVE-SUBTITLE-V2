@@ -267,7 +267,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
 
         if (MLKIT_DICTIONARY.READY) {
             mlkit_status_message = "MLKIT dictionary is ready";
-            setText(MainActivity.textview__mlkit_status, mlkit_status_message);
+            setText(MainActivity.textview_mlkit_status, mlkit_status_message);
             translator.translate(String.valueOf(text)).addOnSuccessListener(s -> {
                 TRANSLATION_TEXT.STRING = s;
                 if (RECOGNIZING_STATUS.IS_RECOGNIZING) {
@@ -311,7 +311,7 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
                         MLKIT_DICTIONARY.READY = true;
                         setText(MainActivity.textview_output_messages, "MLKIT dictionary download completed");
                         mlkit_status_message = "MLKIT dictionary is ready";
-                        setText(MainActivity.textview__mlkit_status, mlkit_status_message);
+                        setText(MainActivity.textview_mlkit_status, mlkit_status_message);
                     })
                     .addOnFailureListener(e -> {});
 
