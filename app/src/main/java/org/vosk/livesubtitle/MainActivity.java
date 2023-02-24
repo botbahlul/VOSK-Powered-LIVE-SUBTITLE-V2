@@ -36,6 +36,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.mlkit.common.model.DownloadConditions;
+import com.google.mlkit.nl.translate.Translation;
+import com.google.mlkit.nl.translate.Translator;
+import com.google.mlkit.nl.translate.TranslatorOptions;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -90,6 +95,10 @@ public class MainActivity extends AppCompatActivity {
     public static TextView textview_mlkit_status;
     @SuppressLint("StaticFieldLeak")
     public static EditText voice_text;
+
+    private Translator translator;
+    private TranslatorOptions options;
+    private DownloadConditions conditions;
 
     private String string_en_src_folder;
     private String string_en_dst_folder;
@@ -564,6 +573,13 @@ public class MainActivity extends AppCompatActivity {
                 file_src_en_folder = new File(string_src_en_folder);
                 string_dst_en_folder = Environment.getDataDirectory() + "/data/" + getApplicationContext().getPackageName() + "/no_backup/com.google.mlkit.translate.models/" + LANGUAGE.DST + "_" + "en" ;
                 file_dst_en_folder = new File(string_dst_en_folder);
+
+                options = new TranslatorOptions.Builder()
+                        .setSourceLanguage(LANGUAGE.SRC)
+                        .setTargetLanguage(LANGUAGE.DST)
+                        .build();
+                translator = Translation.getClient(options);
+                conditions = new DownloadConditions.Builder().build();
                 check_mlkit_dictionary();
 
                 int h;
@@ -667,6 +683,13 @@ public class MainActivity extends AppCompatActivity {
                 file_en_dst_folder = new File(string_en_dst_folder);
                 file_src_en_folder = new File(string_src_en_folder);
                 file_dst_en_folder = new File(string_dst_en_folder);
+
+                options = new TranslatorOptions.Builder()
+                        .setSourceLanguage(LANGUAGE.SRC)
+                        .setTargetLanguage(LANGUAGE.DST)
+                        .build();
+                translator = Translation.getClient(options);
+                conditions = new DownloadConditions.Builder().build();
                 check_mlkit_dictionary();
 
                 int h;
@@ -899,9 +922,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         stop_create_overlay_translation_text();
         stop_create_overlay_mic_button();
         stop_vosk_voice_recognizer();
+        MainActivity.audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, MainActivity.mStreamVolume, AudioManager.ADJUST_SAME);
         finish();
     }
 
@@ -911,6 +936,7 @@ public class MainActivity extends AppCompatActivity {
         stop_create_overlay_translation_text();
         stop_create_overlay_mic_button();
         stop_vosk_voice_recognizer();
+        MainActivity.audio.setStreamVolume(AudioManager.STREAM_NOTIFICATION, MainActivity.mStreamVolume, AudioManager.ADJUST_SAME);
     }
 
     public void setup_src_spinner(ArrayList<String> supported_languages) {
@@ -1008,8 +1034,31 @@ public class MainActivity extends AppCompatActivity {
                 mlkit_status_message = "MLKIT dictionary is not ready";
             }
         }
-        setText(textview_mlkit_status, mlkit_status_message);
-        //new Handler().postDelayed(() -> setText(textview_mlkit_status, ""), 3000);
+
+        if (!MLKIT_DICTIONARY.READY) {
+            mlkit_status_message = "Downloading MLKIT dictionary, please be patient";
+            setText(MainActivity.textview_output_messages, mlkit_status_message);
+
+            translator.downloadModelIfNeeded(conditions)
+                    .addOnSuccessListener(unused -> {
+                        MLKIT_DICTIONARY.READY = true;
+                        String msg = "MLKIT dictionary download completed";
+                        setText(MainActivity.textview_output_messages, msg);
+                        mlkit_status_message = "MLKIT dictionary is ready";
+                        setText(MainActivity.textview_mlkit_status, mlkit_status_message);
+                    })
+                    .addOnFailureListener(e -> {});
+            if (translator != null) translator.close();
+        }
+        else {
+            new Handler(Looper.getMainLooper()).post(() -> {
+                mlkit_status_message = "MLKIT dictionary is ready";
+                setText(textview_mlkit_status, mlkit_status_message);
+                setText(textview_mlkit_status, "");
+                if (translator != null) translator.close();
+            });
+        }
+
     }
 
     int fileSize;
