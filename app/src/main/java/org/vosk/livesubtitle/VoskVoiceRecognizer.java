@@ -96,22 +96,22 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
 
         if (!MLKIT_DICTIONARY.READY) {
             mlkit_status_message = "Downloading MLKIT dictionary, please be patient";
-            setText(MainActivity.textview_mlkit_status, mlkit_status_message);
+            setText(MainActivity.textview_output_messages, mlkit_status_message);
 
             translator.downloadModelIfNeeded(conditions)
                     .addOnSuccessListener(unused -> {
                         MLKIT_DICTIONARY.READY = true;
                         mlkit_status_message = "MLKIT dictionary is ready";
                         setText(MainActivity.textview_mlkit_status, mlkit_status_message);
-                        setText(MainActivity.textview_output_messages, "");
                     })
                     .addOnFailureListener(e -> {});
         }
         else {
             new Handler(Looper.getMainLooper()).post(() -> {
+                mlkit_status_message = "MLKIT dictionary download completed";
+                setText(MainActivity.textview_output_messages, mlkit_status_message);
                 mlkit_status_message = "MLKIT dictionary is ready";
                 setText(MainActivity.textview_mlkit_status, mlkit_status_message);
-                setText(MainActivity.textview_output_messages, "");
             });
         }
 
@@ -334,75 +334,12 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
         }
     }
 
-    /*@SuppressLint("SetTextI18n")
-    private void get_translation(String text, String textFrom, String textTo) {
-        TranslatorOptions options = new TranslatorOptions.Builder()
-                .setSourceLanguage(textFrom)
-                .setTargetLanguage(textTo)
-                .build();
-
-        translator = Translation.getClient(options);
-
-        if (MLKIT_DICTIONARY.READY) {
-            mlkit_status_message = "MLKIT dictionary is ready";
-            setText(MainActivity.textview_mlkit_status, mlkit_status_message);
-            translator.translate(String.valueOf(text)).addOnSuccessListener(s -> {
-                TRANSLATION_TEXT.STRING = s;
-                if (RECOGNIZING_STATUS.IS_RECOGNIZING) {
-                    if (TRANSLATION_TEXT.STRING.length() == 0) {
-                        create_overlay_translation_text.overlay_translation_text.setVisibility(View.INVISIBLE);
-                        create_overlay_translation_text.overlay_translation_text_container.setVisibility(View.INVISIBLE);
-                    } else {
-                        create_overlay_translation_text.overlay_translation_text_container.setVisibility(View.VISIBLE);
-                        create_overlay_translation_text.overlay_translation_text_container.setBackgroundColor(Color.TRANSPARENT);
-                        create_overlay_translation_text.overlay_translation_text.setVisibility(View.VISIBLE);
-                        create_overlay_translation_text.overlay_translation_text.setBackgroundColor(Color.TRANSPARENT);
-                        create_overlay_translation_text.overlay_translation_text.setTextIsSelectable(true);
-                        create_overlay_translation_text.overlay_translation_text.setText(TRANSLATION_TEXT.STRING);
-                        create_overlay_translation_text.overlay_translation_text.setSelection(create_overlay_translation_text.overlay_translation_text.getText().length());
-                        Spannable spannableString = new SpannableStringBuilder(TRANSLATION_TEXT.STRING);
-                        spannableString.setSpan(new ForegroundColorSpan(Color.YELLOW),
-                                0,
-                                create_overlay_translation_text.overlay_translation_text.getSelectionEnd(),
-                                0);
-                        spannableString.setSpan(new BackgroundColorSpan(Color.parseColor("#80000000")),
-                                0,
-                                create_overlay_translation_text.overlay_translation_text.getSelectionEnd(),
-                                0);
-                        create_overlay_translation_text.overlay_translation_text.setText(spannableString);
-                        create_overlay_translation_text.overlay_translation_text.setSelection(create_overlay_translation_text.overlay_translation_text.getText().length());
-                    }
-                }
-                else {
-                    create_overlay_translation_text.overlay_translation_text.setVisibility(View.INVISIBLE);
-                    create_overlay_translation_text.overlay_translation_text_container.setVisibility(View.INVISIBLE);
-                }
-            }).addOnFailureListener(e -> {});
-        }
-        else {
-            String msg = "Downloading MLKIT dictionary, please be patient";
-            setText(MainActivity.textview_output_messages, msg);
-
-            DownloadConditions conditions = new DownloadConditions.Builder().build();
-            translator.downloadModelIfNeeded(conditions)
-                    .addOnSuccessListener(unused -> {
-                        MLKIT_DICTIONARY.READY = true;
-                        setText(MainActivity.textview_output_messages, "MLKIT dictionary download completed");
-                        mlkit_status_message = "MLKIT dictionary is ready";
-                        setText(MainActivity.textview_mlkit_status, mlkit_status_message);
-                    })
-                    .addOnFailureListener(e -> {});
-
-        }
-    }*/
-
-    /*private void toast(String message) {
-        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
-    }*/
-
     public void setText(final TextView tv, final String text){
         new Handler(Looper.getMainLooper()).post(() -> tv.setText(text));
     }
 
+    /*private void toast(String message) {
+        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
+    }*/
 
 }
