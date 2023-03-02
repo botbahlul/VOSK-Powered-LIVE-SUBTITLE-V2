@@ -749,10 +749,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         button_download_model.setOnClickListener(v -> {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && !Environment.isExternalStorageLegacy()) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    Uri uri = Uri.parse("package:" + MainActivity.this.getPackageName());
-                    startActivity(new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, uri));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (!Environment.isExternalStorageManager()) {
+                    try {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                        intent.addCategory("android.intent.category.DEFAULT");
+                        intent.setData(Uri.parse(String.format("package:%s", getApplicationContext().getPackageName())));
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                        startActivity(intent);
+                    }
                 }
             } else {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -983,17 +992,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void check_mlkit_dictionary() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && !Environment.isExternalStorageLegacy()) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                Uri uri = Uri.parse("package:" + MainActivity.this.getPackageName());
-                startActivity(new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, uri));
-            }
-        } else {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-            }
-        }
-
         if (Objects.equals(LANGUAGE.SRC, LANGUAGE.DST)) {
             MLKIT_DICTIONARY.READY = true;
             mlkit_status_message = "";
@@ -1143,10 +1141,10 @@ public class MainActivity extends AppCompatActivity {
                         bytes_downloaded += count;
                         publishProgress((int) ((bytes_downloaded * 100) / lengthOfFile));
                         output.write(data, 0, count);
-                        String string_bytes_received = "Bytes received = " + bytes_downloaded + " bytes";
+                        String string_bytes_downloaded = "Bytes downloaded = " + bytes_downloaded + " bytes";
                         setText(textview_server_response, response);
                         setText(textview_file_size, string_file_size);
-                        setText(textview_bytes_downloaded, string_bytes_received);
+                        setText(textview_bytes_downloaded, string_bytes_downloaded);
                     }
                     output.flush();
                     output.close();
