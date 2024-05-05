@@ -6,3 +6,5 @@ This version is modified version of https://github.com/botbahlul/VOSK-Powered-LI
 I suggest to use Variant 3 at https://github.com/botbahlul/VOSK-Powered-Live-Subtitle-V3 because in my opinion it has better results.
 
 Check my other SPEECH RECOGNITIION + TRANSLATE PROJECTS https://github.com/botbahlul?tab=repositories
+
+Buy me coffee : https://sociabuzz.com/botbahlul/tribe
