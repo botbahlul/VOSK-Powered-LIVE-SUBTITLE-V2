@@ -101,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
     public static TextView textview_mlkit_status;
     @SuppressLint("StaticFieldLeak")
     public static EditText voice_text;
+    @SuppressLint("StaticFieldLeak")
+    public static EditText full_voice_text;
 
     Thread thread_download_vosk_model;
 
@@ -377,6 +379,7 @@ public class MainActivity extends AppCompatActivity {
         textview_output_messages = findViewById(R.id.textview_output_messages);
         textview_mlkit_status = findViewById(R.id.textview_mlkit_status);
         voice_text = findViewById(R.id.voice_text);
+        full_voice_text = findViewById(R.id.full_voice_text);
 
         audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mStreamVolume = audio.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
@@ -415,6 +418,7 @@ public class MainActivity extends AppCompatActivity {
             h = 62;
         }
         voice_text.setHeight((int) (h * getResources().getDisplayMetrics().density));
+        full_voice_text.setHeight((int) (h * getResources().getDisplayMetrics().density));
 
         MLKIT_DICTIONARY.READY = false;
         VOSK_MODEL.IS_DOWNLOADING = false;
@@ -553,6 +557,7 @@ public class MainActivity extends AppCompatActivity {
                     h = 62;
                 }
                 voice_text.setHeight((int) (h * getResources().getDisplayMetrics().density));
+                full_voice_text.setHeight((int) (h * getResources().getDisplayMetrics().density));
 
                 stop_vosk_voice_recognizer();
                 stop_create_overlay_translation_text();
@@ -663,6 +668,7 @@ public class MainActivity extends AppCompatActivity {
                     h = 62;
                 }
                 voice_text.setHeight((int) (h * getResources().getDisplayMetrics().density));
+                full_voice_text.setHeight((int) (h * getResources().getDisplayMetrics().density));
 
                 stop_vosk_voice_recognizer();
                 stop_create_overlay_translation_text();
@@ -831,8 +837,10 @@ public class MainActivity extends AppCompatActivity {
                     VOICE_TEXT.STRING = "";
                     TRANSLATION_TEXT.STRING = "";
                     setText(voice_text, "");
-                    String hints = "Recognized words";
-                    voice_text.setHint(hints);
+                    MainActivity.voice_text.setText("");
+                    MainActivity.voice_text.setHint("Recognized words");
+                    MainActivity.full_voice_text.setText("");
+                    MainActivity.full_voice_text.setHint("Recognized sentences");
                     if (create_overlay_translation_text.overlay_translation_text != null) {
                         setText(create_overlay_translation_text.overlay_translation_text, "");
                         create_overlay_translation_text.overlay_translation_text.setVisibility(View.INVISIBLE);
@@ -843,9 +851,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                     VOICE_TEXT.STRING = "";
                     TRANSLATION_TEXT.STRING = "";
-                    setText(voice_text, "");
-                    hints = "Recognized words";
-                    voice_text.setHint(hints);
+                    MainActivity.voice_text.setText("");
+                    MainActivity.voice_text.setHint("Recognized words");
+                    MainActivity.full_voice_text.setText("");
+                    MainActivity.full_voice_text.setHint("Recognized sentences");
                 }
             }
             else {
@@ -894,8 +903,10 @@ public class MainActivity extends AppCompatActivity {
                         VOICE_TEXT.STRING = "";
                         TRANSLATION_TEXT.STRING = "";
                         setText(voice_text, "");
-                        String hints = "Recognized words";
-                        voice_text.setHint(hints);
+                        MainActivity.voice_text.setText("");
+                        MainActivity.voice_text.setHint("Recognized words");
+                        MainActivity.full_voice_text.setText("");
+                        MainActivity.full_voice_text.setHint("Recognized sentences");
                         if (create_overlay_translation_text.overlay_translation_text != null) {
                             setText(create_overlay_translation_text.overlay_translation_text, "");
                             create_overlay_translation_text.overlay_translation_text.setVisibility(View.INVISIBLE);
@@ -907,9 +918,10 @@ public class MainActivity extends AppCompatActivity {
                         setText(textview_output_messages, "");
                         VOICE_TEXT.STRING = "";
                         TRANSLATION_TEXT.STRING = "";
-                        setText(voice_text, "");
-                        hints = "Recognized words";
-                        voice_text.setHint(hints);
+                        MainActivity.voice_text.setText("");
+                        MainActivity.voice_text.setHint("Recognized words");
+                        MainActivity.full_voice_text.setText("");
+                        MainActivity.full_voice_text.setHint("Recognized sentences");
                     }
                 }
                 else {
