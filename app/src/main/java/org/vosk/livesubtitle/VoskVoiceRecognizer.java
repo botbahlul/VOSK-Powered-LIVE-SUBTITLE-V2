@@ -89,8 +89,8 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
 
         RECOGNIZING_STATUS.STRING = "RECOGNIZING_STATUS.IS_RECOGNIZING = " + RECOGNIZING_STATUS.IS_RECOGNIZING;
         setText(MainActivity.textview_recognizing, RECOGNIZING_STATUS.STRING);
-        OVERLAYING_STATUS.STRING = "OVERLAYING_STATUS.IS_OVERLAYING = " + OVERLAYING_STATUS.IS_OVERLAYING;
-        setText(MainActivity.textview_overlaying, OVERLAYING_STATUS.STRING);
+        MIC_BUTTON_STATUS.STRING = "MIC_BUTTON_STATUS.IS_OVERLAYING = " + MIC_BUTTON_STATUS.IS_OVERLAYING;
+        setText(MainActivity.textview_overlaying, MIC_BUTTON_STATUS.STRING);
 
         options = new TranslatorOptions.Builder()
                 .setSourceLanguage(LANGUAGE.SRC)
@@ -398,8 +398,8 @@ public class VoskVoiceRecognizer extends Service implements RecognitionListener 
             speechService = null;
             RECOGNIZING_STATUS.STRING = "RECOGNIZING_STATUS.IS_RECOGNIZING = " + RECOGNIZING_STATUS.IS_RECOGNIZING;
             MainActivity.textview_recognizing.setText(RECOGNIZING_STATUS.STRING);
-            OVERLAYING_STATUS.STRING = "OVERLAYING_STATUS.IS_OVERLAYING = " + OVERLAYING_STATUS.IS_OVERLAYING;
-            MainActivity.textview_overlaying.setText(OVERLAYING_STATUS.STRING);
+            MIC_BUTTON_STATUS.STRING = "MIC_BUTTON_STATUS.IS_OVERLAYING = " + MIC_BUTTON_STATUS.IS_OVERLAYING;
+            MainActivity.textview_overlaying.setText(MIC_BUTTON_STATUS.STRING);
         } else {
             MainActivity.textview_output_messages.setText("");
             try {
