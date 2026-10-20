@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+
 import java.util.Objects;
 
 public class create_overlay_translation_text extends Service {
@@ -104,9 +105,10 @@ public class create_overlay_translation_text extends Service {
         }
 
         int h;
-        if (Objects.equals(LANGUAGE.DST, "ja") || Objects.equals(LANGUAGE.DST, "zh")) {
+        if (Objects.equals(LANGUAGE.DST, "ja") || Objects.equals(LANGUAGE.DST, "zh-Hans") || Objects.equals(LANGUAGE.DST, "zh-Hant")) {
             h = 75;
-        } else {
+        }
+        else {
             h = 62;
         }
 
@@ -144,7 +146,6 @@ public class create_overlay_translation_text extends Service {
                     }
                 }
         );
-
     }
 
     /*private void toast(String message) {
