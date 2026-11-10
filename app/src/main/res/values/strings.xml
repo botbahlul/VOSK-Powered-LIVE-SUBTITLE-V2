@@ -24,4 +24,5 @@
     <string name="recognized_words">Recognized words</string>
     <string name="debug_mode">Debug mode</string>
     <string name="recognized_sentences">Recognized sentences</string>
+    <string name="output_messages">Output messages</string>
 </resources>
